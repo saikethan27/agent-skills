@@ -62,32 +62,39 @@ G:\agent-skills\google-flow\
 
 ---
 
-## Quickstart
+## Quickstart & Setup on a New Machine
 
-### 1. One-Time Login
-```powershell
-cd G:\agent-skills\google-flow\mcp
+### 1. Install & Build
+```bash
+cd google-flow/mcp
+npm install
+npm run build
+```
+*(Optional: Copy `.env.example` to `.env` if you want custom ports or paths).*
+
+### 2. One-Time Google Login
+```bash
 npm run login
 ```
-Sign in to Google on the visible Chrome window and open or create a Flow project.
+A Chrome window will open. Sign into your Google account (with active Flow access), open or select your Flow project, and leave it logged in.
 
-### 2. Run Batch Video Generator
-```powershell
-node G:\agent-skills\google-flow\mcp\scripts\generate-eventa-videos.mjs
-```
-
-### 3. Connect as MCP in Any Client
-Add to your client's `mcp_config.json`:
+### 3. Add to Your MCP Client
+Add this to your `mcp_config.json` (Antigravity, Claude Code, or Codex):
 ```json
 {
   "mcpServers": {
     "flow": {
       "command": "node",
-      "args": ["G:/agent-skills/google-flow/mcp/dist/index.js"],
+      "args": ["<PATH_TO>/google-flow/mcp/dist/index.js"],
       "env": {
         "FLOW_MCP_PORT": "8787"
       }
     }
   }
 }
+```
+
+### 4. Run Batch Automation (Optional)
+```bash
+node scripts/generate-eventa-videos.mjs
 ```
