@@ -1,0 +1,815 @@
+{
+  "protocol": {
+    "serverInfo": {
+      "name": "mcp-ink-design",
+      "version": "1.2.0"
+    },
+    "capabilities": {
+      "prompts": {
+        "listChanged": true
+      },
+      "resources": {
+        "listChanged": true
+      },
+      "tools": {
+        "listChanged": true
+      }
+    },
+    "tools": [
+      {
+        "name": "ink_create_base",
+        "requiredInputs": [],
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_generate_palette_tokens",
+        "requiredInputs": [],
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_craft_component",
+        "requiredInputs": [],
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_build_threejs_experience",
+        "requiredInputs": [],
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_generate_script_logic",
+        "requiredInputs": [],
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_audit_security",
+        "requiredInputs": [
+          "code"
+        ],
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_validate_design",
+        "requiredInputs": [
+          "code"
+        ],
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_run_python_tests",
+        "requiredInputs": [],
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_capture_viewport",
+        "requiredInputs": [
+          "htmlOrUrl"
+        ],
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true
+        }
+      },
+      {
+        "name": "ink_inspect_website_style",
+        "requiredInputs": [
+          "urlOrCode"
+        ],
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true
+        }
+      },
+      {
+        "name": "ink_import_custom_assets",
+        "requiredInputs": [],
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_generate_gradient",
+        "requiredInputs": [
+          "fromOklch",
+          "toOklch"
+        ],
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_generate_spacing_scale",
+        "requiredInputs": [],
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      }
+    ],
+    "validCall": {
+      "isError": false,
+      "hasStructuredContent": true,
+      "textMatchesStructured": true
+    },
+    "invalidInput": {
+      "content": [
+        {
+          "type": "text",
+          "text": "MCP error -32602: Input validation error: Invalid arguments for tool ink_generate_gradient: Number must be greater than or equal to 2 at steps"
+        }
+      ],
+      "isError": true
+    }
+  },
+  "palettes": [
+    {
+      "mood": "editorial",
+      "contrastAnalysis": {
+        "primaryTextOnBg": {
+          "ratio": 18.24,
+          "grade": "AAA",
+          "passed": true,
+          "apcaLc": -102.9
+        },
+        "secondaryTextOnBg": {
+          "ratio": 8.92,
+          "grade": "AAA",
+          "passed": true,
+          "apcaLc": -65.8
+        },
+        "accentOnSurface": {
+          "ratio": 6.55,
+          "grade": "AA",
+          "passed": true,
+          "apcaLc": -53.4
+        }
+      },
+      "outOfSrgb": []
+    },
+    {
+      "mood": "cyber-tactile",
+      "contrastAnalysis": {
+        "primaryTextOnBg": {
+          "ratio": 19.48,
+          "grade": "AAA",
+          "passed": true,
+          "apcaLc": -106.7
+        },
+        "secondaryTextOnBg": {
+          "ratio": 9.66,
+          "grade": "AAA",
+          "passed": true,
+          "apcaLc": -69.1
+        },
+        "accentOnSurface": {
+          "ratio": 10.18,
+          "grade": "AAA",
+          "passed": true,
+          "apcaLc": -71.5
+        }
+      },
+      "outOfSrgb": [
+        {
+          "name": "accentPrimary",
+          "color": "oklch(0.8 0.22 300)",
+          "rawRgb": {
+            "r": 0.8360185581643008,
+            "g": 0.5871102496651961,
+            "b": 1.2068851162022667
+          }
+        },
+        {
+          "name": "accentSecondary",
+          "color": "oklch(0.7 0.176 205)",
+          "rawRgb": {
+            "r": -1.8714886727179985,
+            "g": 0.732423110500494,
+            "b": 0.8228762905190734
+          }
+        },
+        {
+          "name": "borderActive",
+          "color": "oklch(0.8 0.132 300)",
+          "rawRgb": {
+            "r": 0.7954869440890435,
+            "g": 0.6649801086354703,
+            "b": 1.0273732990376647
+          }
+        }
+      ]
+    },
+    {
+      "mood": "neo-brutalist",
+      "contrastAnalysis": {
+        "primaryTextOnBg": {
+          "ratio": 19.61,
+          "grade": "AAA",
+          "passed": true,
+          "apcaLc": 105.9
+        },
+        "secondaryTextOnBg": {
+          "ratio": 19.8,
+          "grade": "AAA",
+          "passed": true,
+          "apcaLc": 106
+        },
+        "accentOnSurface": {
+          "ratio": 4.13,
+          "grade": "AA Large",
+          "passed": true,
+          "apcaLc": 69.5
+        }
+      },
+      "outOfSrgb": [
+        {
+          "name": "bgElevated",
+          "color": "oklch(1 0.006 45)",
+          "rawRgb": {
+            "r": 1.0152040359844254,
+            "g": 0.9957824442068203,
+            "b": 0.9874304679565026
+          }
+        },
+        {
+          "name": "bgSubtle",
+          "color": "oklch(1 0.007 45)",
+          "rawRgb": {
+            "r": 1.0177172365000071,
+            "g": 0.9950723350077381,
+            "b": 0.9853299920039323
+          }
+        },
+        {
+          "name": "accentPrimary",
+          "color": "oklch(0.55 0.2 185)",
+          "rawRgb": {
+            "r": -2.0162282697472387,
+            "g": 0.5741017896980777,
+            "b": 0.5054750561864907
+          }
+        },
+        {
+          "name": "accentSecondary",
+          "color": "oklch(0.45 0.16 90)",
+          "rawRgb": {
+            "r": 0.4681279525197128,
+            "g": 0.29906067874674885,
+            "b": -0.4612011252560558
+          }
+        },
+        {
+          "name": "accentGlow",
+          "color": "oklch(0.55 0.1 185)",
+          "rawRgb": {
+            "r": -0.06410279990855265,
+            "g": 0.5176815967327333,
+            "b": 0.4751156745166139
+          }
+        },
+        {
+          "name": "borderSubtle",
+          "color": "oklch(1 0.007 45)",
+          "rawRgb": {
+            "r": 1.0177172365000071,
+            "g": 0.9950723350077381,
+            "b": 0.9853299920039323
+          }
+        },
+        {
+          "name": "borderActive",
+          "color": "oklch(0.55 0.12 185)",
+          "rawRgb": {
+            "r": -0.474729131006424,
+            "g": 0.5300465743887791,
+            "b": 0.481190771688817
+          }
+        }
+      ]
+    },
+    {
+      "mood": "luxury-dark",
+      "contrastAnalysis": {
+        "primaryTextOnBg": {
+          "ratio": 17.9,
+          "grade": "AAA",
+          "passed": true,
+          "apcaLc": -101.1
+        },
+        "secondaryTextOnBg": {
+          "ratio": 8.67,
+          "grade": "AAA",
+          "passed": true,
+          "apcaLc": -64.2
+        },
+        "accentOnSurface": {
+          "ratio": 9.79,
+          "grade": "AAA",
+          "passed": true,
+          "apcaLc": -69.5
+        }
+      },
+      "outOfSrgb": [
+        {
+          "name": "accentPrimary",
+          "color": "oklch(0.78 0.14 30)",
+          "rawRgb": {
+            "r": 1.0208868887667217,
+            "g": 0.5757431180717504,
+            "b": 0.5056677220383691
+          }
+        }
+      ]
+    },
+    {
+      "mood": "organic-modern",
+      "contrastAnalysis": {
+        "primaryTextOnBg": {
+          "ratio": 16.5,
+          "grade": "AAA",
+          "passed": true,
+          "apcaLc": -98.5
+        },
+        "secondaryTextOnBg": {
+          "ratio": 7.96,
+          "grade": "AAA",
+          "passed": true,
+          "apcaLc": -62
+        },
+        "accentOnSurface": {
+          "ratio": 7.83,
+          "grade": "AAA",
+          "passed": true,
+          "apcaLc": -61.3
+        }
+      },
+      "outOfSrgb": []
+    }
+  ],
+  "uncheckedMutedText": [
+    {
+      "mood": "editorial",
+      "foreground": "oklch(0.51 0.025 215)",
+      "background": "oklch(0.11 0.015 215)",
+      "contrast": {
+        "ratio": 3.59,
+        "grade": "AA Large",
+        "normalTextAA": false,
+        "normalTextAAA": false,
+        "largeTextAA": true,
+        "largeTextAAA": false,
+        "uiComponentAA": true,
+        "apcaLc": -33.9,
+        "apcaAbs": 33.9,
+        "apcaGuidance": "Fail"
+      }
+    },
+    {
+      "mood": "cyber-tactile",
+      "foreground": "oklch(0.53 0.025 160)",
+      "background": "oklch(0.1 0.02 160)",
+      "contrast": {
+        "ratio": 3.94,
+        "grade": "AA Large",
+        "normalTextAA": false,
+        "normalTextAAA": false,
+        "largeTextAA": true,
+        "largeTextAAA": false,
+        "uiComponentAA": true,
+        "apcaLc": -36.6,
+        "apcaAbs": 36.6,
+        "apcaGuidance": "Fail"
+      }
+    },
+    {
+      "mood": "neo-brutalist",
+      "foreground": "oklch(0 0.025 45)",
+      "background": "oklch(0.98 0.005 45)",
+      "contrast": {
+        "ratio": 19.8,
+        "grade": "AAA",
+        "normalTextAA": true,
+        "normalTextAAA": true,
+        "largeTextAA": true,
+        "largeTextAAA": true,
+        "uiComponentAA": true,
+        "apcaLc": 106,
+        "apcaAbs": 106,
+        "apcaGuidance": "Body"
+      }
+    },
+    {
+      "mood": "luxury-dark",
+      "foreground": "oklch(0.5 0.025 250)",
+      "background": "oklch(0.09 0.01 250)",
+      "contrast": {
+        "ratio": 3.46,
+        "grade": "AA Large",
+        "normalTextAA": false,
+        "normalTextAAA": false,
+        "largeTextAA": true,
+        "largeTextAAA": false,
+        "uiComponentAA": true,
+        "apcaLc": -32.7,
+        "apcaAbs": 32.7,
+        "apcaGuidance": "Fail"
+      }
+    },
+    {
+      "mood": "organic-modern",
+      "foreground": "oklch(0.49 0.025 125)",
+      "background": "oklch(0.15 0.025 125)",
+      "contrast": {
+        "ratio": 3.16,
+        "grade": "AA Large",
+        "normalTextAA": false,
+        "normalTextAAA": false,
+        "largeTextAA": true,
+        "largeTextAAA": false,
+        "uiComponentAA": true,
+        "apcaLc": -30.8,
+        "apcaAbs": 30.8,
+        "apcaGuidance": "Fail"
+      }
+    }
+  ],
+  "defaultPaletteEnvelope": {
+    "status": "success",
+    "warnings": [],
+    "contrastAnalysis": [
+      {
+        "pairing": "primaryTextOnBg",
+        "ratio": 18.24,
+        "grade": "AAA",
+        "passed": true,
+        "apcaLc": -102.9
+      },
+      {
+        "pairing": "secondaryTextOnBg",
+        "ratio": 8.92,
+        "grade": "AAA",
+        "passed": true,
+        "apcaLc": -65.8
+      },
+      {
+        "pairing": "accentOnSurface",
+        "ratio": 6.55,
+        "grade": "AA",
+        "passed": true,
+        "apcaLc": -53.4
+      }
+    ]
+  },
+  "paletteRawVersusMappedContrast": [
+    {
+      "mood": "editorial",
+      "rawY": 0.28632419862178954,
+      "mappedY": 0.28632419862178954,
+      "reportedRatio": 6.55,
+      "mappedSrgbRatio": 6.545725714992008
+    },
+    {
+      "mood": "cyber-tactile",
+      "rawY": 0.46991334482625335,
+      "mappedY": 0.4907300912276474,
+      "reportedRatio": 10.18,
+      "mappedSrgbRatio": 10.587265664116734
+    },
+    {
+      "mood": "neo-brutalist",
+      "rawY": 0.1894455363086286,
+      "mappedY": 0.1775919241641959,
+      "reportedRatio": 4.13,
+      "mappedSrgbRatio": 4.349988779419467
+    },
+    {
+      "mood": "luxury-dark",
+      "rawY": 0.4467752126252242,
+      "mappedY": 0.44608162005947,
+      "reportedRatio": 9.79,
+      "mappedSrgbRatio": 9.778153901440913
+    },
+    {
+      "mood": "organic-modern",
+      "rawY": 0.369039828385012,
+      "mappedY": 0.369039828385012,
+      "reportedRatio": 7.83,
+      "mappedSrgbRatio": 7.833037102605653
+    }
+  ],
+  "p3": {
+    "color": {
+      "l": 0.7,
+      "c": 0.25,
+      "h": 30
+    },
+    "inSrgb": false,
+    "inP3": false,
+    "p3Result": {
+      "inGamut": false,
+      "clipped": true,
+      "iterations": 16,
+      "oklch": {
+        "l": 0.7,
+        "c": 0.246826171875,
+        "h": 30
+      },
+      "srgb": {
+        "r": 1,
+        "g": 0.34231646817589606,
+        "b": 0.2507227807624061
+      },
+      "hex": "#ff5740"
+    },
+    "trueSrgbResult": {
+      "inGamut": false,
+      "clipped": true,
+      "iterations": 16,
+      "oklch": {
+        "l": 0.7,
+        "c": 0.19449615478515625,
+        "h": 30
+      },
+      "srgb": {
+        "r": 1,
+        "g": 0.3907143562154831,
+        "b": 0.3122593899040016
+      },
+      "hex": "#ff6450"
+    }
+  },
+  "spacingEdgeCases": {
+    "equalViewport": {
+      "status": "success",
+      "token": {
+        "px": 16,
+        "rem": "1.000rem",
+        "clamp": "clamp(0.850rem, -Infinityrem + Infinityvw, 1.000rem)"
+      }
+    },
+    "equalPaletteViewport": {
+      "status": "success",
+      "display": {
+        "name": "display",
+        "minPx": 38,
+        "maxPx": 72,
+        "clampCss": "clamp(2.375rem, -Infinityrem + Infinityvw, 4.500rem)",
+        "lineHeight": 1.08,
+        "letterSpacing": "-0.035em"
+      }
+    },
+    "zeroRatio": {
+      "status": "success",
+      "token": {
+        "px": null,
+        "rem": "Infinityrem"
+      }
+    },
+    "negativeBase": {
+      "px": -16,
+      "rem": "-1.000rem"
+    },
+    "customRatio1_5": {
+      "3xs": {
+        "px": 4.74,
+        "rem": "0.296rem"
+      },
+      "2xs": {
+        "px": 7.11,
+        "rem": "0.444rem"
+      },
+      "xs": {
+        "px": 10.67,
+        "rem": "0.667rem"
+      },
+      "sm": {
+        "px": 16,
+        "rem": "1.000rem"
+      },
+      "md": {
+        "px": 24,
+        "rem": "1.500rem"
+      },
+      "lg": {
+        "px": 36,
+        "rem": "2.250rem"
+      },
+      "xl": {
+        "px": 54,
+        "rem": "3.375rem"
+      },
+      "2xl": {
+        "px": 81,
+        "rem": "5.063rem"
+      },
+      "3xl": {
+        "px": 121.5,
+        "rem": "7.594rem"
+      }
+    },
+    "normalClamp": "clamp(1.000rem, 0.667rem + 1.48vw, 2.000rem)"
+  },
+  "fractionalGradientSteps": {
+    "stops": [
+      {
+        "t": 0,
+        "oklch": {
+          "l": 0.5,
+          "c": 0.05,
+          "h": 30
+        },
+        "hex": "#7d5952",
+        "srgb": {
+          "r": 0.4916760140377568,
+          "g": 0.34790544241939464,
+          "b": 0.32290242372980615
+        },
+        "clipped": false
+      },
+      {
+        "t": 1,
+        "oklch": {
+          "l": 0.6,
+          "c": 0.05,
+          "h": 60
+        },
+        "hex": "#977a62",
+        "srgb": {
+          "r": 0.5921860630908871,
+          "g": 0.47669772221707657,
+          "b": 0.3852723610496313
+        },
+        "clipped": false
+      }
+    ],
+    "css": "linear-gradient(to right in oklch, oklch(0.500 0.050 30), oklch(0.600 0.050 60))",
+    "hexes": [
+      "#7d5952",
+      "#977a62"
+    ]
+  },
+  "includeArabicTokensHasEffect": false,
+  "wcagRounding": {
+    "foreground": "#148700",
+    "background": "#000000",
+    "rawRatio": 4.495333659863548,
+    "packageResult": {
+      "ratio": 4.5,
+      "grade": "AA",
+      "normalTextAA": true,
+      "normalTextAAA": false,
+      "largeTextAA": true,
+      "largeTextAAA": true,
+      "uiComponentAA": true
+    }
+  },
+  "apcaReferenceSource": "https://raw.githubusercontent.com/Myndex/apca-w3/master/src/apca-w3.js",
+  "apca": [
+    {
+      "fg": "#777777",
+      "bg": "#ffffff",
+      "package": {
+        "lc": 74,
+        "abs": 74
+      },
+      "referenceLc": 71.11110332561125
+    },
+    {
+      "fg": "#888888",
+      "bg": "#777777",
+      "package": {
+        "lc": -14.7,
+        "abs": 14.7
+      },
+      "referenceLc": -7.320188639714409
+    },
+    {
+      "fg": "#ffffff",
+      "bg": "#000000",
+      "package": {
+        "lc": -108,
+        "abs": 108
+      },
+      "referenceLc": -107.88473318309848
+    },
+    {
+      "fg": "#000000",
+      "bg": "#ffffff",
+      "package": {
+        "lc": 106,
+        "abs": 106
+      },
+      "referenceLc": 106.04067321268862
+    }
+  ],
+  "captureFailure": {
+    "envelope": {
+      "status": "failed",
+      "summary": "Viewport capture engine reported an error: audit-mocked backend failure",
+      "data": {
+        "error": "audit-mocked backend failure"
+      },
+      "warnings": [],
+      "evidence": {},
+      "nextActions": []
+    },
+    "outputSchemaValid": false,
+    "protocolResult": {
+      "content": [
+        {
+          "type": "text",
+          "text": "MCP error -32602: Output validation error: Invalid structured content for tool ink_capture_viewport: Required at data.title\nRequired at data.outputDirectory\nRequired at data.snapshots"
+        }
+      ],
+      "isError": true
+    }
+  },
+  "pythonFailureProtocol": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"status\": \"failed\",\n  \"summary\": \"Python verification engine encountered an error: audit-mocked backend failure\",\n  \"data\": {\n    \"error\": \"audit-mocked backend failure\"\n  },\n  \"warnings\": [\n    \"Verify Python 3.10+ is available in system PATH.\"\n  ],\n  \"evidence\": {},\n  \"nextActions\": [\n    \"Check Python environment or run inline TypeScript tools as fallback.\"\n  ]\n}"
+      }
+    ],
+    "structuredContent": {
+      "status": "failed",
+      "summary": "Python verification engine encountered an error: audit-mocked backend failure",
+      "data": {
+        "error": "audit-mocked backend failure"
+      },
+      "warnings": [
+        "Verify Python 3.10+ is available in system PATH."
+      ],
+      "evidence": {},
+      "nextActions": [
+        "Check Python environment or run inline TypeScript tools as fallback."
+      ]
+    }
+  },
+  "buildMismatches": [],
+  "buildFilesChecked": 39
+}

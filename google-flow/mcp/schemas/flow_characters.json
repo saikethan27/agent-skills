@@ -1,0 +1,1 @@
+{"name":"flow_characters","description":"List the reusable characters in the open Flow project. Each can be used in a scene as 'asset:\u003cname\u003e'.","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","properties":{},"type":"object"}}

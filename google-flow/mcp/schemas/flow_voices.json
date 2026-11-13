@@ -1,0 +1,1 @@
+{"name":"flow_voices","description":"Narrator voices available for flow_narrate: Google AI Studio's (with whether a key is set up) and the English voices installed on this computer.","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","properties":{},"type":"object"}}

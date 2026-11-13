@@ -1,0 +1,9 @@
+{
+  "name": "work-report",
+  "version": "0.1.0",
+  "description": "Shows what Claude has done for you: tasks finished, estimated hours and dollars saved, by kind and by model, in a pane.",
+  "types": "./types/index.d.ts",
+  "author": {
+    "name": "saikethan"
+  }
+}

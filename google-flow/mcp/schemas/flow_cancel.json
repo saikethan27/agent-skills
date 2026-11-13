@@ -1,0 +1,1 @@
+{"name":"flow_cancel","description":"Cancel a job that has not started yet. A running generation cannot be cancelled.","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","properties":{"job_id":{"type":"string"}},"required":["job_id"],"type":"object"}}

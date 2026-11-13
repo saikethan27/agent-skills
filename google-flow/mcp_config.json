@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "flow": {
+      "command": "node",
+      "args": ["mcp/dist/index.js"],
+      "env": {
+        "FLOW_MCP_PORT": "8787"
+      }
+    }
+  }
+}

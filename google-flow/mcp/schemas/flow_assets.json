@@ -1,0 +1,1 @@
+{"name":"flow_assets","description":"List the images and videos in the open Flow project (title and kind). Titles can be used as 'asset:\u003ctitle\u003e' in flow_generate or with flow_download.","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","properties":{"kind":{"enum":["image","video","scene"],"type":"string"}},"type":"object"}}

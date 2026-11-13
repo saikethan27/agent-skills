@@ -1,0 +1,12 @@
+{
+  "name": "flow-video",
+  "displayName": "Google Flow Studio Video Generator",
+  "description": "Generate, edit, download, upscale, and assemble cinematic AI videos and images using Google Flow Studio via MCP or automated scripts.",
+  "version": "1.0.0",
+  "author": "Google / Enhanced by Madhav",
+  "suggestedPrompts": [
+    "Generate a cinematic slow-motion mandap push-in video using Google Flow",
+    "Check Google Flow video generation status and download completed clips",
+    "Run the Eventa video generation batch runner with Omni Flash"
+  ]
+}

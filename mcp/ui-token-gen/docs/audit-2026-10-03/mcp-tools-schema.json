@@ -1,0 +1,4386 @@
+{
+  "tools": [
+    {
+      "name": "ink_create_base",
+      "title": "Scaffold Web Application Foundation",
+      "description": "PURPOSE: Scaffold a complete, production-grade semantic web application foundation featuring OKLCH color token architecture, fluid typography scales, modern CSS logical properties, and bilingual Arabic RTL/LTR layout balance.\n\nBEHAVIOR: Generates complete in-memory application files (index.html, styles.css, main.js) within the structured result envelope. Operates purely in-memory with zero direct filesystem side effects; callers receive the code ready to be written to disk. Requires no external credentials or elevated permissions.\n\nUSAGE GUIDELINES:\n- When to use: Call at the start of a web project to establish root HTML semantics, CSS custom property foundations, viewport meta tags, and font configurations.\n- When NOT to use: Do NOT use to craft isolated UI widgets (use ink_craft_component instead) or to synthesize standalone color variables without project markup (use ink_generate_palette_tokens instead).\n- Alternatives: Use ink_craft_component for individual components; use ink_generate_palette_tokens for standalone CSS color tokens.\n\nRETURNS: ResultEnvelope containing structured 'files' dictionary (index.html, styles.css, main.js), OKLCH tokensOverview, contrast verification analysis, and typography scales.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectName": {
+            "type": "string",
+            "default": "ink-craft-app",
+            "description": "Name of the web application or project folder (used in document title and manifest metadata)"
+          },
+          "designStyle": {
+            "type": "string",
+            "enum": [
+              "editorial",
+              "cyber-tactile",
+              "neo-brutalist",
+              "luxury-dark",
+              "organic-modern"
+            ],
+            "default": "editorial",
+            "description": "Aesthetic foundation archetype governing OKLCH color harmonies, typography ratios, and border radius"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "rtl",
+              "ltr",
+              "auto"
+            ],
+            "default": "auto",
+            "description": "Document writing direction: 'rtl' sets dir='rtl' for Arabic, 'ltr' for English, 'auto' configures bidirectional CSS logical properties"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "ar",
+              "en",
+              "bilingual"
+            ],
+            "default": "bilingual",
+            "description": "Primary language mode: 'ar' optimizes Arabic optical hierarchy, 'en' optimizes Latin, 'bilingual' isolates bidi text with <bdi> chips"
+          },
+          "arabicFont": {
+            "type": "string",
+            "enum": [
+              "ibm-plex",
+              "cairo-display",
+              "tajawal-modern",
+              "readex-tech",
+              "amiri-editorial"
+            ],
+            "default": "ibm-plex",
+            "description": "Curated Arabic font family loaded from Google Fonts; pairs with Latin typography with matching optical x-height"
+          },
+          "includeThreeJs": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, mounts a responsive WebGL Three.js canvas in the hero section and includes CDN script tags"
+          },
+          "includePwaMeta": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true, injects mobile viewport constraints, theme-color meta tags, and color-scheme dark/light preferences"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "blocked",
+              "failed"
+            ],
+            "description": "Execution outcome status. 'partial'/'blocked' mean the tool ran but could not satisfy every requested constraint."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Concise, human-readable executive summary of the tool outcome"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "projectName": {
+                "type": "string"
+              },
+              "designStyle": {
+                "type": "string"
+              },
+              "direction": {
+                "type": "string"
+              },
+              "language": {
+                "type": "string"
+              },
+              "files": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "In-memory project files mapping (e.g. index.html, styles.css, main.js, manifest.json)"
+              },
+              "tokens": {
+                "type": "object",
+                "additionalProperties": {}
+              },
+              "arabicTypography": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "threeJsConfig": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "projectName",
+              "designStyle",
+              "direction",
+              "language",
+              "files",
+              "tokens",
+              "arabicTypography",
+              "threeJsConfig"
+            ],
+            "additionalProperties": true,
+            "description": "Domain-specific typed payload returned by the tool"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operational cautions, craft advice, or non-blocking warnings"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "inputsDigest": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "retrievedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Audit trail, source references, and generated artifact locations"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Actionable sequential recommendations or subsequent tool suggestions"
+          }
+        },
+        "required": [
+          "status",
+          "summary",
+          "data",
+          "warnings"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ink_generate_palette_tokens",
+      "title": "Generate OKLCH Color Palette & Design Tokens",
+      "description": "PURPOSE: Generate OKLCH palette ramps, semantic color tokens, fluid clamp() typography and modular spacing tokens with a complete WCAG 2.1 + APCA 0.98G contrast audit.\n\nBEHAVIOR: Synthesizes CSS custom properties and typography/spacing steps purely in-memory (zero filesystem writes, zero network access). Colors are derived from perceptual ramps (equal OKLCH lightness increments or a configurable cubic-Bezier eased curve) and gamut mapped into the requested target (sRGB or Display P3). Every text x surface pairing (including muted text and elevated/subtle surfaces) plus accent/border UI pairings is measured on the EXPORTED 8-bit sRGB fallbacks using full-precision WCAG ratios; pass/fail decisions are never taken on a rounded value.\n\nCONTRAST BEHAVIOUR: results are reported against the requested `contrastTarget` (AA/AAA/AA-Large/none). There is NO unconditional AAA guarantee. `correctionMode` may adjust a failing token's OKLCH lightness (hue and chroma preserved) and every adjustment is reported in `adjustments`. When a pairing cannot reach the target within the documented lightness limits, it is listed in `failedPairings` and the envelope status becomes 'partial' or 'blocked'.\n\nUSAGE GUIDELINES:\n- When to use: creating or refining a design system's color foundation, perceptual ramps, fluid typographic scales, or dark/light surface tokens.\n- When NOT to use: extracting colors from an existing live website (use ink_inspect_website_style), scaffolding a project skeleton (use ink_create_base), or checking supplied colors (use ink_validate_design).\n- Alternatives: ink_generate_fluid_scale for arbitrary clamp() values; ink_inspect_website_style to reverse-engineer existing sites.\n\nRETURNS: ResultEnvelope with gamut-mapped token map (`tokens`), per-token exports incl. sRGB fallbacks (`tokenExports`), perceptual ramps (`ramps`), the full contrast audit (`contrastAnalysis`), failed pairings, adjustments, typography/spacing scales and a ready-to-use :root stylesheet.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mood": {
+            "type": "string",
+            "enum": [
+              "editorial",
+              "cyber-tactile",
+              "neo-brutalist",
+              "luxury-dark",
+              "organic-modern"
+            ],
+            "default": "editorial",
+            "description": "Creative aesthetic mood determining surface depths, text luminance steps, and brand accents"
+          },
+          "baseHue": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 360,
+            "description": "Optional hue angle (0-360) that replaces the preset hue (hue rotation is applied to every ramp)"
+          },
+          "target": {
+            "type": "string",
+            "enum": [
+              "srgb",
+              "p3"
+            ],
+            "description": "Gamut target used for token mapping, exports and the contrast audit",
+            "default": "srgb"
+          },
+          "rampSteps": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 32,
+            "description": "Number of stops per perceptual ramp (2-32). Equal-lightness steps by default."
+          },
+          "lightnessMode": {
+            "type": "string",
+            "enum": [
+              "equal",
+              "eased"
+            ],
+            "default": "equal",
+            "description": "Lightness interpolation: 'equal' = uniform OKLCH lightness increments; 'eased' = cubic-Bezier eased curve"
+          },
+          "lightnessEasing": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 4,
+            "maxItems": 4,
+            "description": "Cubic-Bezier control points used when lightnessMode = 'eased' (evaluated as a real curve)"
+          },
+          "chromaProfile": {
+            "type": "string",
+            "enum": [
+              "constant",
+              "linear",
+              "bell",
+              "eased"
+            ],
+            "description": "Global chroma profile applied to every ramp unless overridden per ramp"
+          },
+          "ramps": {
+            "type": "object",
+            "properties": {
+              "surface": {
+                "type": "object",
+                "properties": {
+                  "lightnessStart": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Ramp start OKLCH lightness (0-1)"
+                  },
+                  "lightnessEnd": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Ramp end OKLCH lightness (0-1)"
+                  },
+                  "chromaStart": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 0.5,
+                    "description": "Chroma at ramp position 0 (0-0.5)"
+                  },
+                  "chromaEnd": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 0.5,
+                    "description": "Chroma at ramp position 1 (0-0.5)"
+                  },
+                  "chromaProfile": {
+                    "type": "string",
+                    "enum": [
+                      "constant",
+                      "linear",
+                      "bell",
+                      "eased"
+                    ],
+                    "description": "Chroma shape along the ramp: 'constant', 'linear', 'bell' (peak at midpoint), or 'eased' (uses the easing curve)"
+                  },
+                  "hueStart": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 360,
+                    "description": "Hue at ramp position 0 in degrees"
+                  },
+                  "hueEnd": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 360,
+                    "description": "Hue at ramp position 1 in degrees (linear, not shortest-arc)"
+                  },
+                  "steps": {
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 32,
+                    "description": "Stop count for this ramp (2-32)"
+                  }
+                },
+                "additionalProperties": false,
+                "description": "Per-ramp endpoint overrides; omitted fields keep the mood preset value"
+              },
+              "text": {
+                "$ref": "#/properties/ramps/properties/surface",
+                "description": "Per-ramp endpoint overrides; omitted fields keep the mood preset value"
+              },
+              "accent": {
+                "$ref": "#/properties/ramps/properties/surface",
+                "description": "Per-ramp endpoint overrides; omitted fields keep the mood preset value"
+              }
+            },
+            "additionalProperties": false,
+            "description": "Optional per-ramp endpoint overrides for the surface, text and accent ramps"
+          },
+          "contrastTarget": {
+            "type": "string",
+            "enum": [
+              "aa",
+              "aaa",
+              "aa-large",
+              "none"
+            ],
+            "description": "Contrast target applied to every audited text pairing",
+            "default": "aa"
+          },
+          "correctionMode": {
+            "type": "string",
+            "enum": [
+              "none",
+              "text-lightness",
+              "both"
+            ],
+            "description": "Contrast correction policy. Adjustments only change OKLCH lightness (hue and chroma preserved) and are fully reported.",
+            "default": "text-lightness"
+          },
+          "maxCorrectionDelta": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 0.5,
+            "default": 0.35,
+            "description": "Maximum lightness change a correction may apply to a single token (0-0.5)"
+          },
+          "includeTypography": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true, includes fluid clamp() typography scale tokens"
+          },
+          "typographyBasePx": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 16,
+            "description": "Geometric typography base size in px (size(0) = basePx)"
+          },
+          "typographyRatio": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 3,
+            "default": 1.25,
+            "description": "Geometric typography ratio: size(n) = basePx * ratio^n"
+          },
+          "typographyStepRange": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "default": [
+              -1,
+              5
+            ],
+            "description": "Geometric typography step indices as [min, max] (max >= min)"
+          },
+          "rootFontPx": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 64,
+            "default": 16,
+            "description": "Root font size used for all rem conversions"
+          },
+          "includeArabicTokens": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true, includes Arabic optical line-heights (1.75-1.85), Arabic font stacks and bidi fallbacks in the CSS output"
+          },
+          "minVw": {
+            "type": "number",
+            "minimum": 200,
+            "maximum": 800,
+            "default": 360,
+            "description": "Minimum fluid viewport width in px (200-800); drives clamp() lower bound"
+          },
+          "maxVw": {
+            "type": "number",
+            "minimum": 801,
+            "maximum": 2560,
+            "default": 1440,
+            "description": "Maximum fluid viewport width in px (801-2560); must be greater than minVw"
+          },
+          "spacingBase": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 16,
+            "description": "Base spacing step in px (modular ratio anchor)"
+          },
+          "spacingRatio": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 4,
+            "default": 1.25,
+            "description": "Modular spacing ratio; must be >= 1 for a monotonic scale"
+          },
+          "spacingFluid": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, emits fluid clamp() spacing tokens scaled between minVw and maxVw"
+          },
+          "spacingFluidMinFactor": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 1,
+            "default": 0.85,
+            "description": "Lower fluid bound of each spacing step as a fraction of the step value (0-1]"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "blocked",
+              "failed"
+            ],
+            "description": "Execution outcome status. 'partial'/'blocked' mean the tool ran but could not satisfy every requested constraint."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Concise, human-readable executive summary of the tool outcome"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "mood": {
+                "type": "string"
+              },
+              "baseHue": {
+                "type": "number"
+              },
+              "target": {
+                "type": "string",
+                "enum": [
+                  "srgb",
+                  "p3"
+                ],
+                "description": "Gamut target for mapping and export: 'srgb' or 'p3' (display-p3)"
+              },
+              "contrastTarget": {
+                "type": "string",
+                "enum": [
+                  "aa",
+                  "aaa",
+                  "aa-large",
+                  "none"
+                ],
+                "description": "Contrast target applied to text pairings: 'aa' = 4.5:1 normal text, 'aaa' = 7:1, 'aa-large' = 3:1 large text, 'none' = report only. UI component pairings always use 3:1."
+              },
+              "correctionMode": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "text-lightness",
+                  "both"
+                ],
+                "description": "Correction mode: 'none' = report only; 'text-lightness' = adjust failing text tokens' OKLCH lightness (hue and chroma preserved); 'both' = also adjust accent/border tokens"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "success",
+                  "partial",
+                  "blocked"
+                ],
+                "description": "Whether every audited pairing met the requested target"
+              },
+              "tokens": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Dictionary of semantic CSS token names to gamut-mapped OKLCH values"
+              },
+              "tokenExports": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "oklch": {
+                      "type": "string",
+                      "description": "Gamut-mapped OKLCH value written to CSS"
+                    },
+                    "requestedOklch": {
+                      "type": "object",
+                      "properties": {
+                        "l": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1,
+                          "description": "OKLCH lightness 0-1"
+                        },
+                        "c": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 0.5,
+                          "description": "OKLCH chroma 0-0.5"
+                        },
+                        "h": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 360,
+                          "description": "OKLCH hue angle in degrees"
+                        }
+                      },
+                      "required": [
+                        "l",
+                        "c",
+                        "h"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "hex": {
+                      "type": "string",
+                      "description": "Independent 8-bit sRGB fallback hex (used by the contrast audit)"
+                    },
+                    "mapped": {
+                      "type": "boolean",
+                      "description": "True when gamut mapping or serialization rounding changed the requested color"
+                    },
+                    "inSrgb": {
+                      "type": "boolean"
+                    },
+                    "target": {
+                      "$ref": "#/properties/data/properties/target"
+                    }
+                  },
+                  "required": [
+                    "oklch",
+                    "requestedOklch",
+                    "hex",
+                    "mapped",
+                    "inSrgb",
+                    "target"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Per-token export detail incl. sRGB fallbacks and mapping flags"
+              },
+              "ramps": {
+                "type": "object",
+                "properties": {
+                  "surface": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "t": {
+                          "type": "number"
+                        },
+                        "oklch": {
+                          "$ref": "#/properties/data/properties/tokenExports/additionalProperties/properties/requestedOklch"
+                        },
+                        "css": {
+                          "type": "string"
+                        },
+                        "hex": {
+                          "type": "string"
+                        },
+                        "mapped": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "t",
+                        "oklch",
+                        "css",
+                        "hex",
+                        "mapped"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "text": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/properties/data/properties/ramps/properties/surface/items"
+                    }
+                  },
+                  "accent": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/properties/data/properties/ramps/properties/surface/items"
+                    }
+                  }
+                },
+                "required": [
+                  "surface",
+                  "text",
+                  "accent"
+                ],
+                "additionalProperties": false,
+                "description": "Perceptual ramps: equal OKLCH lightness increments or the configured eased curve"
+              },
+              "contrastAnalysis": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "pairing": {
+                      "type": "string",
+                      "description": "Stable pairing identifier (e.g. textMutedOnBgSurface)"
+                    },
+                    "foreground": {
+                      "type": "string",
+                      "description": "Semantic foreground token name"
+                    },
+                    "background": {
+                      "type": "string",
+                      "description": "Semantic background token name"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "text",
+                        "ui"
+                      ],
+                      "description": "'text' pairings use the contrast target; 'ui' pairings always require 3:1"
+                    },
+                    "requiredRatio": {
+                      "type": "number",
+                      "description": "Threshold this pairing is measured against (0 when target = none)"
+                    },
+                    "ratio": {
+                      "type": "number",
+                      "description": "Display-rounded WCAG contrast ratio (2 decimals)"
+                    },
+                    "ratioExact": {
+                      "type": "number",
+                      "description": "Full-precision WCAG contrast ratio used for pass/fail decisions"
+                    },
+                    "grade": {
+                      "type": "string",
+                      "enum": [
+                        "AAA",
+                        "AA",
+                        "AA Large",
+                        "Fail"
+                      ],
+                      "description": "WCAG grade derived from the exact ratio"
+                    },
+                    "passed": {
+                      "type": "boolean",
+                      "description": "True when ratioExact >= requiredRatio"
+                    },
+                    "apcaLc": {
+                      "type": "number",
+                      "description": "Signed APCA 0.98G Lc (negative = light text on dark background)"
+                    },
+                    "apcaAbs": {
+                      "type": "number",
+                      "description": "Absolute |Lc| value"
+                    },
+                    "apcaGuidance": {
+                      "type": "string",
+                      "enum": [
+                        "Body",
+                        "Large",
+                        "Fail"
+                      ],
+                      "description": "Simplified font-size-agnostic APCA tier"
+                    },
+                    "fgHex": {
+                      "type": "string",
+                      "description": "Exported sRGB fallback hex measured as the foreground"
+                    },
+                    "bgHex": {
+                      "type": "string",
+                      "description": "Exported sRGB fallback hex measured as the background"
+                    },
+                    "adjusted": {
+                      "type": "boolean",
+                      "description": "True when correction mode changed the foreground lightness for this pairing"
+                    }
+                  },
+                  "required": [
+                    "pairing",
+                    "foreground",
+                    "background",
+                    "kind",
+                    "requiredRatio",
+                    "ratio",
+                    "ratioExact",
+                    "grade",
+                    "passed",
+                    "apcaLc",
+                    "apcaAbs",
+                    "apcaGuidance",
+                    "fgHex",
+                    "bgHex",
+                    "adjusted"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Every audited pairing (all text x surface combinations plus accent/border UI pairings)"
+              },
+              "failedPairings": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Pairing ids that did not reach the requested contrast target"
+              },
+              "adjustments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "pairing": {
+                      "type": "string"
+                    },
+                    "property": {
+                      "type": "string",
+                      "const": "lightness"
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "to": {
+                      "type": "number"
+                    },
+                    "delta": {
+                      "type": "number"
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "pairing",
+                    "property",
+                    "from",
+                    "to",
+                    "delta",
+                    "reason"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Every lightness adjustment applied by the correction mode"
+              },
+              "typographyScale": {
+                "type": "object",
+                "additionalProperties": {}
+              },
+              "geometricTypography": {
+                "type": "object",
+                "additionalProperties": {},
+                "description": "size(n) = basePx * ratio^n scale"
+              },
+              "cssVariables": {
+                "type": "string",
+                "description": "Ready-to-paste CSS block with :root variables, semantic color tokens and sRGB fallbacks"
+              },
+              "spacingScale": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "px": {
+                      "type": "number"
+                    },
+                    "rem": {
+                      "type": "string"
+                    },
+                    "clamp": {
+                      "type": "string"
+                    },
+                    "fluidMinPx": {
+                      "type": "number"
+                    },
+                    "n": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "px",
+                    "rem"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Modular spacing scale tokens with px/rem/clamp values"
+              },
+              "spacingCss": {
+                "type": "string",
+                "description": "Ready-to-paste CSS block with :root spacing variables"
+              },
+              "arabicTokens": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Arabic typography tokens (present only when includeArabicTokens = true, otherwise null)"
+              },
+              "apcaSummary": {
+                "type": "object",
+                "additionalProperties": {},
+                "description": "APCA 0.98G Lc summary per pairing (WCAG 2.1 + APCA)"
+              }
+            },
+            "required": [
+              "mood",
+              "baseHue",
+              "target",
+              "contrastTarget",
+              "correctionMode",
+              "status",
+              "tokens",
+              "tokenExports",
+              "ramps",
+              "contrastAnalysis",
+              "failedPairings",
+              "adjustments",
+              "cssVariables"
+            ],
+            "additionalProperties": true,
+            "description": "Domain-specific typed payload returned by the tool"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operational cautions, craft advice, or non-blocking warnings"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "inputsDigest": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "retrievedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Audit trail, source references, and generated artifact locations"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Actionable sequential recommendations or subsequent tool suggestions"
+          }
+        },
+        "required": [
+          "status",
+          "summary",
+          "data",
+          "warnings"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ink_craft_component",
+      "title": "Craft UI Component with Tactile Physics",
+      "description": "PURPOSE: Synthesize bespoke, tactile UI components (hero sections, glass cards, tactile buttons, navigation bars, metrics grids, modal dialogs) with semantic HTML5, modern CSS logical properties, and spring micro-interaction physics.\n\nBEHAVIOR: Generates component markup, stylesheets, and lifecycle JavaScript strings purely in-memory. Does not mutate the filesystem, write to disk, or initiate network connections. Enforces keyboard accessibility (ARIA dialog, roving tabindex, escape dismiss) and bidi RTL/LTR compliance.\n\nUSAGE GUIDELINES:\n- When to use: Use when creating individual, high-craft UI components and interactive widgets that need to be embedded in an existing layout.\n- When NOT to use: Do NOT use to scaffold an entire web application project (use ink_create_base instead), nor for 3D WebGL scenes (use ink_build_threejs_experience instead), nor for non-visual state stores (use ink_generate_script_logic instead).\n- Alternatives: Use ink_create_base for full application scaffolding; use ink_build_threejs_experience for 3D canvas experiences.\n\nRETURNS: ResultEnvelope containing semantic 'html' markup, scoped 'css' rules using logical properties and OKLCH tokens, tactile 'js' interaction logic, and accessibility notes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "componentType": {
+            "type": "string",
+            "enum": [
+              "hero-section",
+              "glass-card",
+              "tactile-button",
+              "navigation-bar",
+              "metrics-grid",
+              "modal-dialog"
+            ],
+            "default": "hero-section",
+            "description": "Type of bespoke UI component to synthesize"
+          },
+          "title": {
+            "type": "string",
+            "default": "Craft Architecture",
+            "description": "Primary headline or action label of the component"
+          },
+          "description": {
+            "type": "string",
+            "default": "Engineered with optical precision",
+            "description": "Subheading or explanatory body copy"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "rtl",
+              "ltr",
+              "auto"
+            ],
+            "default": "auto",
+            "description": "Writing direction; 'auto' enforces CSS logical properties (margin-inline, inset-inline)"
+          },
+          "interactivePhysics": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true, attaches mouse spring drag, ripple physics, and keyboard navigation handlers"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "blocked",
+              "failed"
+            ],
+            "description": "Execution outcome status. 'partial'/'blocked' mean the tool ran but could not satisfy every requested constraint."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Concise, human-readable executive summary of the tool outcome"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "componentType": {
+                "type": "string"
+              },
+              "html": {
+                "type": "string",
+                "description": "Semantic HTML5 markup with ARIA roles and logical structure"
+              },
+              "css": {
+                "type": "string",
+                "description": "Scoped CSS using logical properties, fluid clamp values, and OKLCH color tokens"
+              },
+              "js": {
+                "type": "string",
+                "description": "Tactile micro-interaction JavaScript with automatic teardown"
+              },
+              "accessibilityNotes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Accessibility considerations and ARIA keyboard patterns"
+              }
+            },
+            "required": [
+              "componentType",
+              "html",
+              "css",
+              "js",
+              "accessibilityNotes"
+            ],
+            "additionalProperties": true,
+            "description": "Domain-specific typed payload returned by the tool"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operational cautions, craft advice, or non-blocking warnings"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "inputsDigest": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "retrievedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Audit trail, source references, and generated artifact locations"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Actionable sequential recommendations or subsequent tool suggestions"
+          }
+        },
+        "required": [
+          "status",
+          "summary",
+          "data",
+          "warnings"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ink_build_threejs_experience",
+      "title": "Build 3D WebGL Canvas Experience",
+      "description": "PURPOSE: Generate high-performance, responsive 3D WebGL scenes using Three.js (particle constellations, geometric wireframes, morphing meshes, or interactive hero canvases) with memory-safe lifecycles.\n\nBEHAVIOR: Generates client-side HTML container, full-bleed CSS, and JavaScript module code purely in-memory. Zero filesystem mutations. Incorporates GPU protections: automatically clamps window.devicePixelRatio to 2, attaches window resize listeners, pauses requestAnimationFrame on hidden browser tabs via the Page Visibility API, and exposes a clean teardown disposal function (geometries, materials, renderer.dispose()).\n\nUSAGE GUIDELINES:\n- When to use: Use when a page needs an interactive 3D hero background, ambient particle field, or futuristic geometric visual experience.\n- When NOT to use: Do NOT use for standard 2D UI widgets or layouts (use ink_craft_component instead), nor for basic CSS animations without WebGL.\n- Alternatives: Use ink_craft_component for 2D UI components; use ink_create_base for scaffolding the full application shell.\n\nRETURNS: ResultEnvelope containing canvas mounting 'html', full-bleed responsive 'css', initialization and teardown 'js', and lifecycle documentation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sceneType": {
+            "type": "string",
+            "enum": [
+              "particle-constellation",
+              "geometric-wireframe",
+              "morphing-mesh",
+              "interactive-hero-canvas"
+            ],
+            "default": "particle-constellation",
+            "description": "Type of 3D WebGL scene to generate with Three.js"
+          },
+          "accentColorHex": {
+            "type": "string",
+            "default": "#38bdf8",
+            "description": "Primary accent color in hex format (#RRGGBB) used for points, materials, and point lights"
+          },
+          "particleCount": {
+            "type": "number",
+            "minimum": 100,
+            "maximum": 5000,
+            "default": 1200,
+            "description": "Number of particle points (clamped between 100 and 5000 for GPU thermal and battery efficiency)"
+          },
+          "enableMouseParallax": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true, registers smooth pointer move listeners with lerp damping for gentle depth parallax"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "blocked",
+              "failed"
+            ],
+            "description": "Execution outcome status. 'partial'/'blocked' mean the tool ran but could not satisfy every requested constraint."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Concise, human-readable executive summary of the tool outcome"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "sceneType": {
+                "type": "string"
+              },
+              "html": {
+                "type": "string",
+                "description": "HTML canvas mounting container"
+              },
+              "css": {
+                "type": "string",
+                "description": "Absolute full-bleed canvas styling with pointer-events isolation"
+              },
+              "js": {
+                "type": "string",
+                "description": "Complete Three.js module code with initInkThreeScene, resize listener, and teardown disposal"
+              },
+              "lifecycle": {
+                "type": "object",
+                "properties": {
+                  "init": {
+                    "type": "string"
+                  },
+                  "renderLoop": {
+                    "type": "string"
+                  },
+                  "teardown": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "init",
+                  "renderLoop",
+                  "teardown"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "sceneType",
+              "html",
+              "css",
+              "js"
+            ],
+            "additionalProperties": true,
+            "description": "Domain-specific typed payload returned by the tool"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operational cautions, craft advice, or non-blocking warnings"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "inputsDigest": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "retrievedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Audit trail, source references, and generated artifact locations"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Actionable sequential recommendations or subsequent tool suggestions"
+          }
+        },
+        "required": [
+          "status",
+          "summary",
+          "data",
+          "warnings"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ink_generate_script_logic",
+      "title": "Generate Modular Architecture Logic",
+      "description": "PURPOSE: Generate zero-dependency, memory-safe JavaScript and TypeScript architectural modules (State Store, Event Bus, Intersection Scroll Observer, Theme Switcher, Form Validator) with production error boundaries.\n\nBEHAVIOR: Synthesizes modular ES6+ JavaScript and optional TypeScript declarations purely in-memory. Zero filesystem modifications. All generated code enforces memory cleanup paradigms (explicit unsubscribe functions, WeakMap caching, EventTarget/listener teardown).\n\nUSAGE GUIDELINES:\n- When to use: Use when creating application state management, event-driven decoupled messaging, viewport scroll animators, theme togglers, or accessible form validation.\n- When NOT to use: Do NOT use to render UI elements or write component styling (use ink_craft_component instead) or WebGL graphics (use ink_build_threejs_experience instead).\n- Alternatives: Use ink_craft_component for visual UI components; use ink_build_threejs_experience for 3D canvas rendering.\n\nRETURNS: ResultEnvelope containing zero-dependency ES module 'code', optional 'typescriptTypes', architectural pattern documentation, and executable 'usageExample'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "enum": [
+              "state-store",
+              "event-bus",
+              "scroll-observer",
+              "theme-toggle",
+              "form-validator"
+            ],
+            "default": "state-store",
+            "description": "Architectural runtime pattern: 'state-store' (pub/sub state container), 'event-bus' (typed decoupled messaging), 'scroll-observer' (IntersectionObserver animator), 'theme-toggle' (dark/light/system switcher with persistence), 'form-validator' (real-time accessible field validation)"
+          },
+          "moduleName": {
+            "type": "string",
+            "default": "AppStore",
+            "description": "Name of the exported JavaScript/TypeScript class or module"
+          },
+          "typescript": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, emits strict TypeScript interfaces and generic typings alongside the implementation"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "blocked",
+              "failed"
+            ],
+            "description": "Execution outcome status. 'partial'/'blocked' mean the tool ran but could not satisfy every requested constraint."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Concise, human-readable executive summary of the tool outcome"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string"
+              },
+              "moduleName": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string",
+                "description": "Zero-dependency ES module code with automatic teardown"
+              },
+              "typescriptTypes": {
+                "type": "string",
+                "description": "Companion TypeScript declarations"
+              },
+              "usageExample": {
+                "type": "string",
+                "description": "Usage demonstration snippet showing initialization and consumption"
+              }
+            },
+            "required": [
+              "pattern",
+              "moduleName",
+              "description",
+              "code",
+              "usageExample"
+            ],
+            "additionalProperties": true,
+            "description": "Domain-specific typed payload returned by the tool"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operational cautions, craft advice, or non-blocking warnings"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "inputsDigest": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "retrievedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Audit trail, source references, and generated artifact locations"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Actionable sequential recommendations or subsequent tool suggestions"
+          }
+        },
+        "required": [
+          "status",
+          "summary",
+          "data",
+          "warnings"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ink_audit_security",
+      "title": "Audit Frontend Code Security & Headers",
+      "description": "PURPOSE: Audit frontend and full-stack web code for client-side security vulnerabilities (DOM XSS, eval/Function sinks, innerHTML execution, plain-text token storage in localStorage, missing security headers, and strict CSP generation).\n\nBEHAVIOR: Executes AST and regex static security scanning in-memory. Purely read-only; never executes or mutates the audited code, and never transmits source code over external networks. Emits severity ratings (critical, high, medium, low) and exact code remediations.\n\nUSAGE GUIDELINES:\n- When to use: Use prior to deployment or code review to ensure zero client-side injection vulnerabilities, secure token handling, and robust Content-Security-Policy headers.\n- When NOT to use: Do NOT use to validate CSS aesthetic quality, color contrast, or fluid typography rules (use ink_validate_design instead), nor for external URL penetration testing.\n- Alternatives: Use ink_validate_design for design system, contrast, and bidi compliance checks; use ink_run_python_tests for Python AST test suites.\n\nRETURNS: ResultEnvelope containing 'securityScore', pass/fail boolean, structured 'findings' array with line numbers and remediations, recommended 'recommendedCspHeader', and safe authentication storage patterns.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Source code string (HTML, JavaScript, or CSS) to inspect for client-side web vulnerabilities"
+          },
+          "filename": {
+            "type": "string",
+            "default": "index.html",
+            "description": "Virtual file path context for reporting findings (e.g. 'src/main.js' or 'index.html')"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "blocked",
+              "failed"
+            ],
+            "description": "Execution outcome status. 'partial'/'blocked' mean the tool ran but could not satisfy every requested constraint."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Concise, human-readable executive summary of the tool outcome"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "filename": {
+                "type": "string"
+              },
+              "passed": {
+                "type": "boolean",
+                "description": "True if score >= 80 and zero critical or high vulnerabilities are detected"
+              },
+              "securityScore": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100,
+                "description": "Composite security score out of 100"
+              },
+              "findingsSummary": {
+                "type": "object",
+                "properties": {
+                  "critical": {
+                    "type": "number"
+                  },
+                  "high": {
+                    "type": "number"
+                  },
+                  "medium": {
+                    "type": "number"
+                  },
+                  "total": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "critical",
+                  "high",
+                  "medium",
+                  "total"
+                ],
+                "additionalProperties": false
+              },
+              "findings": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "critical",
+                        "high",
+                        "medium",
+                        "low",
+                        "info"
+                      ]
+                    },
+                    "category": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "codeSnippet": {
+                      "type": "string"
+                    },
+                    "line": {
+                      "type": "number"
+                    },
+                    "recommendation": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "severity",
+                    "category",
+                    "title",
+                    "description",
+                    "recommendation"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Granular list of identified vulnerabilities with line numbers and remediations"
+              },
+              "recommendedCspHeader": {
+                "type": "string",
+                "description": "Hardened Content-Security-Policy header directive recommendation"
+              },
+              "recommendedAuthPattern": {
+                "type": "string",
+                "description": "Secure client authentication storage recommendations"
+              }
+            },
+            "required": [
+              "filename",
+              "passed",
+              "securityScore",
+              "findingsSummary",
+              "findings",
+              "recommendedCspHeader",
+              "recommendedAuthPattern"
+            ],
+            "additionalProperties": true,
+            "description": "Domain-specific typed payload returned by the tool"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operational cautions, craft advice, or non-blocking warnings"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "inputsDigest": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "retrievedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Audit trail, source references, and generated artifact locations"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Actionable sequential recommendations or subsequent tool suggestions"
+          }
+        },
+        "required": [
+          "status",
+          "summary",
+          "data",
+          "warnings"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ink_validate_design",
+      "title": "Validate Design Craft & Contrast Compliance",
+      "description": "PURPOSE: Evaluate HTML and CSS against anti-AI-slop heuristics, measure WCAG 2.1 contrast on the supplied color pair, report APCA 0.98G contrast, and audit RTL/LTR logical properties and optical centering.\n\nBEHAVIOR: Executes in-memory static analysis on the supplied code strings. Completely read-only with zero filesystem writes, no network requests, and deterministic scoring. Contrast is computed with the WCAG relative-luminance formula on the FULL-PRECISION ratio: pass/fail booleans use the exact ratio while the displayed `ratio` value is rounded to two decimals, so a pair such as #148700 on #000000 (exact 4.4953, displayed 4.50) correctly FAILS normal-text AA. APCA uses the reference 0.98G equations (APCA-specific luminance, black soft clamp, polarity exponents, low-contrast clipping and offsets) with no arbitrary output clamp.\n\nFLAGS: `checkBidi` toggles the logical-property audit. `checkCentering` toggles the optical centering / horizontal overflow audit (centered body copy, 100vw overflow, oversized fixed widths, auto margins without max-width, over-tight tracking); when disabled the audit is skipped and reported as null. `textFontSizePx`/`textFontWeight` enable font-size/weight-aware APCA guidance from the published lookup table (APCA font lookup, Public Beta 0.1.7 (G); basis \"apca-0.1.7-G-lookup\"). `textUse` (\"large\" by default; \"body\" applies APCA's documented +15 Lc adjustment below Lc 70; \"non-text\" uses the raw Lc) selects the table row, weights snap to the nearest published column, and the 999/777 sentinel codes never pass for real text.\n\nUSAGE GUIDELINES:\n- When to use: after creating or modifying layouts, components, or stylesheets to verify craft quality, contrast compliance, bidi readiness, and centering before committing.\n- When NOT to use: JavaScript security scanning (ink_audit_security), browser screenshots (ink_capture_viewport), or whole-system audits (ink_generate_palette_tokens).\n- Alternatives: ink_audit_security for security/XSS checks; ink_capture_viewport for visual verification.\n\nRETURNS: ResultEnvelope containing 'craftScore', 'craftGrade', 'isHighCraft', 'antiSlopChecks', the exact/displayed 'contrast' report with WCAG flags and APCA guidance, 'bidiAndAlignment', 'centeringAudit' and prioritized 'remediationAdvice'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "HTML and CSS code string to evaluate for anti-slop rules, typography scaling, and alignment"
+          },
+          "foregroundHex": {
+            "type": "string",
+            "default": "#f8fafc",
+            "description": "Primary foreground text color in hex format (#RRGGBB) to verify against surface"
+          },
+          "backgroundHex": {
+            "type": "string",
+            "default": "#0b0f19",
+            "description": "Surface background color in hex format (#RRGGBB) to verify contrast ratio against text"
+          },
+          "checkBidi": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true, audits CSS logical property compliance (e.g. flagging margin-left instead of margin-inline-start)"
+          },
+          "checkCentering": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true, runs the optical centering and horizontal overflow audit (centered body copy, 100vw overflow, oversized fixed widths, auto margins without max-width, over-tight tracking). When false the audit is skipped and reported as null."
+          },
+          "textFontSizePx": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 400,
+            "description": "Rendered font size in px of the verified text; enables font-size/weight-aware APCA guidance"
+          },
+          "textFontWeight": {
+            "type": "number",
+            "minimum": 100,
+            "maximum": 900,
+            "description": "Font weight (100-900) of the verified text; enables font-size/weight-aware APCA guidance"
+          },
+          "textUse": {
+            "type": "string",
+            "enum": [
+              "body",
+              "large",
+              "non-text"
+            ],
+            "description": "Use case for the APCA font lookup. 'body' applies APCA's documented +15 Lc adjustment below Lc 70; 'large' and 'non-text' use the raw Lc"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "blocked",
+              "failed"
+            ],
+            "description": "Execution outcome status. 'partial'/'blocked' mean the tool ran but could not satisfy every requested constraint."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Concise, human-readable executive summary of the tool outcome"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "craftScore": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100,
+                "description": "Overall design craftsmanship rating (0-100)"
+              },
+              "craftGrade": {
+                "type": "string",
+                "description": "Letter grade (S, A, B, C, F)"
+              },
+              "isHighCraft": {
+                "type": "boolean",
+                "description": "True if craftScore >= 75 and contrast passes WCAG AA"
+              },
+              "antiSlopChecks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {}
+                },
+                "description": "Results for anti-slop rules"
+              },
+              "contrast": {
+                "type": "object",
+                "properties": {
+                  "foreground": {
+                    "type": "string"
+                  },
+                  "background": {
+                    "type": "string"
+                  },
+                  "ratio": {
+                    "type": "number",
+                    "description": "Display-rounded WCAG ratio (2 decimals)"
+                  },
+                  "ratioExact": {
+                    "type": "number",
+                    "description": "Full-precision WCAG ratio used for pass/fail"
+                  },
+                  "grade": {
+                    "type": "string"
+                  },
+                  "wcagAAA": {
+                    "type": "boolean"
+                  },
+                  "wcagAA": {
+                    "type": "boolean"
+                  },
+                  "wcagLargeAA": {
+                    "type": "boolean"
+                  },
+                  "wcagUIAA": {
+                    "type": "boolean"
+                  },
+                  "apca": {
+                    "type": "object",
+                    "properties": {
+                      "lc": {
+                        "type": "number",
+                        "description": "Signed APCA 0.98G Lc (negative = light text on dark background)"
+                      },
+                      "lcExact": {
+                        "type": "number",
+                        "description": "Full-precision APCA Lc before display rounding"
+                      },
+                      "abs": {
+                        "type": "number",
+                        "description": "Absolute |Lc| value"
+                      },
+                      "polarity": {
+                        "type": "string",
+                        "enum": [
+                          "normal",
+                          "reverse",
+                          "identical"
+                        ],
+                        "description": "APCA branch used"
+                      },
+                      "simplifiedTier": {
+                        "type": "string",
+                        "enum": [
+                          "Body",
+                          "Large",
+                          "Fail"
+                        ],
+                        "description": "Font-size-agnostic simplified tier (|Lc| >= 60 Body, >= 45 Large). Provided for backward compatibility only; it does not use the published font-size/weight lookup (see `fontAware`)."
+                      },
+                      "fontAware": {
+                        "type": "object",
+                        "properties": {
+                          "minFontSizePx": {
+                            "type": "number",
+                            "description": "Published APCA lookup minimum font size (999 = prohibited, 777 = non-text only)"
+                          },
+                          "passes": {
+                            "type": "boolean"
+                          },
+                          "tier": {
+                            "type": "string",
+                            "enum": [
+                              "Body",
+                              "Large",
+                              "Fail"
+                            ]
+                          },
+                          "lookupLcRow": {
+                            "type": "number",
+                            "description": "Lc level of the reference table row used"
+                          },
+                          "lookupWeight": {
+                            "type": "number",
+                            "description": "Weight column used (snapped to a published weight)"
+                          },
+                          "clampedToTable": {
+                            "type": "boolean",
+                            "description": "True when |Lc| exceeded the published table range"
+                          },
+                          "basis": {
+                            "type": "string",
+                            "const": "apca-0.1.7-G-lookup"
+                          },
+                          "reference": {
+                            "type": "string",
+                            "description": "Reference implementation and table version"
+                          },
+                          "note": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "minFontSizePx",
+                          "passes",
+                          "tier",
+                          "lookupLcRow",
+                          "lookupWeight",
+                          "clampedToTable",
+                          "basis",
+                          "reference",
+                          "note"
+                        ],
+                        "additionalProperties": false,
+                        "description": "Font-size/weight-aware guidance from the published APCA font lookup table; present only when textFontSizePx is provided."
+                      }
+                    },
+                    "required": [
+                      "lc",
+                      "lcExact",
+                      "abs",
+                      "polarity",
+                      "simplifiedTier"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "foreground",
+                  "background",
+                  "ratio",
+                  "ratioExact",
+                  "grade",
+                  "wcagAAA",
+                  "wcagAA",
+                  "wcagLargeAA",
+                  "wcagUIAA"
+                ],
+                "additionalProperties": false,
+                "description": "Mathematical WCAG contrast calculation results"
+              },
+              "bidiAndAlignment": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "CSS logical property audit details"
+              },
+              "centeringAudit": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "passed": {
+                        "type": "boolean"
+                      },
+                      "checks": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "check": {
+                              "type": "string"
+                            },
+                            "passed": {
+                              "type": "boolean"
+                            },
+                            "severity": {
+                              "type": "string",
+                              "enum": [
+                                "info",
+                                "warn"
+                              ]
+                            },
+                            "detail": {
+                              "type": "string"
+                            },
+                            "recommendation": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "check",
+                            "passed",
+                            "severity",
+                            "detail",
+                            "recommendation"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "remediationSnippet": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "passed",
+                      "checks",
+                      "remediationSnippet"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Optical centering and overflow audit; null when checkCentering = false"
+              },
+              "strengths": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Design elements adhering to high-craft principles"
+              },
+              "remediationAdvice": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Specific, actionable code edits to reach Grade A/S craft"
+              }
+            },
+            "required": [
+              "craftScore",
+              "craftGrade",
+              "isHighCraft",
+              "antiSlopChecks",
+              "contrast",
+              "bidiAndAlignment",
+              "centeringAudit",
+              "strengths",
+              "remediationAdvice"
+            ],
+            "additionalProperties": true,
+            "description": "Domain-specific typed payload returned by the tool"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operational cautions, craft advice, or non-blocking warnings"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "inputsDigest": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "retrievedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Audit trail, source references, and generated artifact locations"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Actionable sequential recommendations or subsequent tool suggestions"
+          }
+        },
+        "required": [
+          "status",
+          "summary",
+          "data",
+          "warnings"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ink_run_python_tests",
+      "title": "Run Python Verification Suite (AST, Contrast, APCA, Capture)",
+      "description": "PURPOSE: Execute the external Python verification suite for AST static analysis, WCAG + APCA 0.98G contrast maths, design heuristics, bidi auditing, website inspection and headless layout capture.\n\nBEHAVIOR: Spawns the local Python 3 ink_verifier engine in a subprocess and returns its structured JSON. This tool is NOT read-only and NOT closed-world: the 'capture' action WRITES PNG/SVG snapshot files to disk, and the 'inspect' action FETCHES a remote URL. Both facts are reflected in the tool annotations (readOnlyHint: false, openWorldHint: true). Requires Python 3.10+ on PATH (override with INK_PYTHON_PATH). The optional `target` parameter is forwarded to the Python engine for the 'inspect' and 'capture' actions.\n\nCONTRAST BEHAVIOUR: the Python engine classifies WCAG compliance from the FULL-PRECISION ratio (`ratio_exact`) and only rounds the displayed `ratio`, matching the TypeScript engine. The `contrast` action also reports APCA 0.98G computed with the reference equations. Unsupported color syntax is reported as an error instead of silently resolving to black.\n\nUSAGE GUIDELINES:\n- When to use: deep multi-pass Python analysis, independent contrast/APCA verification, remote site inspection, or real-browser snapshots.\n- When NOT to use: fast in-memory CSS validation without Python (ink_validate_design) or standalone client-side security audits (ink_audit_security).\n- Alternatives: ink_validate_design for TypeScript-native verification; ink_capture_viewport for the wrapped snapshot workflow.\n\nRETURNS: ResultEnvelope whose `data` contains the structured outcome of the invoked action ('contrast', 'security', 'visual', 'audit', 'full', 'bidi', 'inspect', 'capture').",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "contrast",
+              "security",
+              "visual",
+              "audit",
+              "full",
+              "bidi",
+              "inspect",
+              "capture"
+            ],
+            "default": "full",
+            "description": "Verification action. 'capture' WRITES PNG/SVG snapshot files and 'inspect' FETCHES a remote URL, so this tool is not read-only or closed-world."
+          },
+          "code": {
+            "type": "string",
+            "description": "Source code snippet to analyze (required when action is 'security', 'visual', 'audit', 'bidi', or 'full')"
+          },
+          "target": {
+            "type": "string",
+            "description": "Website URL or local HTML file path. Forwarded to the Python engine for the 'inspect' and 'capture' actions."
+          },
+          "foregroundHex": {
+            "type": "string",
+            "description": "Foreground text color in hex format (used when action is 'contrast')"
+          },
+          "backgroundHex": {
+            "type": "string",
+            "description": "Background surface color in hex format (used when action is 'contrast')"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "blocked",
+              "failed"
+            ],
+            "description": "Execution outcome status. 'partial'/'blocked' mean the tool ran but could not satisfy every requested constraint."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Concise, human-readable executive summary of the tool outcome"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "contrast": {
+                "type": "object",
+                "properties": {
+                  "foreground": {
+                    "type": "string"
+                  },
+                  "background": {
+                    "type": "string"
+                  },
+                  "ratio": {
+                    "type": "number",
+                    "description": "Display-rounded WCAG ratio (2 decimals)"
+                  },
+                  "ratio_exact": {
+                    "type": "number",
+                    "description": "Full-precision WCAG ratio used for classification"
+                  },
+                  "luminance": {
+                    "type": "object",
+                    "properties": {
+                      "foreground": {
+                        "type": "number"
+                      },
+                      "background": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "foreground",
+                      "background"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "wcag": {
+                    "type": "object",
+                    "properties": {
+                      "normal_text_aa": {
+                        "type": "boolean"
+                      },
+                      "normal_text_aaa": {
+                        "type": "boolean"
+                      },
+                      "large_text_aa": {
+                        "type": "boolean"
+                      },
+                      "large_text_aaa": {
+                        "type": "boolean"
+                      },
+                      "ui_component_aa": {
+                        "type": "boolean"
+                      },
+                      "grade": {
+                        "type": "string",
+                        "enum": [
+                          "AAA",
+                          "AA",
+                          "AA Large",
+                          "Fail"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "normal_text_aa",
+                      "normal_text_aaa",
+                      "large_text_aa",
+                      "large_text_aaa",
+                      "ui_component_aa",
+                      "grade"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "apca": {
+                    "type": "object",
+                    "properties": {
+                      "lc": {
+                        "type": "number"
+                      },
+                      "lc_exact": {
+                        "type": "number"
+                      },
+                      "abs": {
+                        "type": "number"
+                      },
+                      "polarity": {
+                        "type": "string"
+                      },
+                      "algorithm": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "lc",
+                      "lc_exact",
+                      "abs",
+                      "polarity",
+                      "algorithm"
+                    ],
+                    "additionalProperties": false,
+                    "description": "APCA 0.98G result computed with the reference equations"
+                  }
+                },
+                "required": [
+                  "foreground",
+                  "background",
+                  "ratio",
+                  "ratio_exact",
+                  "luminance",
+                  "wcag"
+                ],
+                "additionalProperties": false
+              },
+              "visual_audit": {
+                "type": "object",
+                "additionalProperties": {}
+              },
+              "security_lint": {
+                "type": "object",
+                "additionalProperties": {}
+              },
+              "bidi_audit": {
+                "type": "object",
+                "additionalProperties": {}
+              },
+              "contrast_check": {
+                "$ref": "#/properties/data/properties/contrast"
+              },
+              "extractedPalette": {
+                "type": "object",
+                "additionalProperties": {}
+              },
+              "extractedTypography": {
+                "type": "object",
+                "additionalProperties": {}
+              },
+              "snapshots": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              },
+              "viewportQualityChecks": {
+                "type": "object",
+                "additionalProperties": {}
+              },
+              "source": {
+                "type": "string"
+              },
+              "inferredArchetype": {
+                "type": "string"
+              },
+              "error": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "description": "Domain-specific typed payload returned by the tool"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operational cautions, craft advice, or non-blocking warnings"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "inputsDigest": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "retrievedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Audit trail, source references, and generated artifact locations"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Actionable sequential recommendations or subsequent tool suggestions"
+          }
+        },
+        "required": [
+          "status",
+          "summary",
+          "data",
+          "warnings"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ink_capture_viewport",
+      "title": "Capture Multi-Viewport Responsive Snapshots",
+      "description": "PURPOSE: Capture viewport snapshots (16:9 desktop landscape, 9:16 vertical story, and 390x844 mobile) via headless Chromium to verify layout integrity, responsiveness, and optical centering.\n\nBEHAVIOR: Launches a local headless browser with an isolated temporary user-data profile, renders the provided HTML string or URL, and WRITES one image file per viewport into `outputDirectory` (default '.ink_snapshots/'). When no browser is installed it writes deterministic SVG fallbacks and reports `format`. This tool therefore writes files and can fetch remote URLs (annotations: readOnlyHint false, openWorldHint true). Browser capture needs a longer timeout than the default 12s, because three sequential headless renders are performed.\n\nERROR BEHAVIOUR: backend failures are returned as proper MCP error results (`isError: true`) that preserve the underlying Python error message instead of being reshaped into an output-schema validation error.\n\nUSAGE GUIDELINES:\n- When to use: after making HTML/CSS modifications or finishing a component to visually confirm alignment across desktop, mobile, and tall vertical screens.\n- When NOT to use: fast code syntax or contrast checks without browser rendering (ink_validate_design).\n- Alternatives: ink_validate_design for fast static design linting; ink_inspect_website_style to reverse-engineer design tokens.\n\nRETURNS: ResultEnvelope with a 'snapshots' list (label, viewport, exact dimensions, file path, size, format) and layout overflow metrics.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "htmlOrUrl": {
+            "type": "string",
+            "description": "HTML markup string, local file path (file:///index.html), or public HTTP/HTTPS URL to render and photograph"
+          },
+          "title": {
+            "type": "string",
+            "default": "Site Snapshot",
+            "description": "Human-readable label used for image naming and output organization"
+          },
+          "outputDirectory": {
+            "type": "string",
+            "description": "Target folder where 16:9, 9:16, and mobile snapshots are written (defaults to '.ink_snapshots')"
+          }
+        },
+        "required": [
+          "htmlOrUrl"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "blocked",
+              "failed"
+            ],
+            "description": "Execution outcome status. 'partial'/'blocked' mean the tool ran but could not satisfy every requested constraint."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Concise, human-readable executive summary of the tool outcome"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "outputDirectory": {
+                "type": "string"
+              },
+              "snapshots": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "description": "Viewport descriptor (e.g. 'Desktop Landscape (16:9)')"
+                    },
+                    "viewport": {
+                      "type": "string"
+                    },
+                    "dimensions": {
+                      "type": "string",
+                      "description": "Exact pixel dimensions (e.g. '1920x1080')"
+                    },
+                    "aspect_ratio": {
+                      "type": "string"
+                    },
+                    "filePath": {
+                      "type": "string",
+                      "description": "Absolute path to the saved snapshot file"
+                    },
+                    "fileSize": {
+                      "type": "number",
+                      "description": "Size of the file in bytes"
+                    },
+                    "format": {
+                      "type": "string",
+                      "description": "Snapshot format ('png' or 'svg' fallback)"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "viewport",
+                    "dimensions",
+                    "aspect_ratio",
+                    "filePath"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "List of captured viewport images"
+              },
+              "layoutMetrics": {
+                "type": "object",
+                "additionalProperties": {},
+                "description": "Computed scrollWidth, scrollHeight, and overflow metrics"
+              },
+              "browserDetected": {
+                "type": "boolean",
+                "description": "Whether a local Chromium/Edge/Chrome executable was found"
+              }
+            },
+            "required": [
+              "title",
+              "outputDirectory",
+              "snapshots"
+            ],
+            "additionalProperties": true,
+            "description": "Domain-specific typed payload returned by the tool"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operational cautions, craft advice, or non-blocking warnings"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "inputsDigest": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "retrievedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Audit trail, source references, and generated artifact locations"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Actionable sequential recommendations or subsequent tool suggestions"
+          }
+        },
+        "required": [
+          "status",
+          "summary",
+          "data",
+          "warnings"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ink_inspect_website_style",
+      "title": "Inspect & Reverse-Engineer Website Style",
+      "description": "PURPOSE: Deconstruct existing live websites or HTML/CSS templates to reverse-engineer color palettes, typography scales, elevation shadows, and layout DNA into modern OKLCH tokens.\n\nBEHAVIOR: Fetches public website markup over HTTPS (10s timeout, redirect limits, private-subnet blocking) or parses local HTML/CSS in-memory. Strictly read-only with zero disk modifications. `extractOklchPalette` is applied to BOTH paths: every extracted hex, rgb()/rgba() and oklch() literal is converted with real color math (sRGB -> linear -> OKLab -> OKLCH) and gamut mapped for the requested target. Literals that cannot be converted are reported in `unsupportedColors` instead of being replaced by a fixed palette, and the recommended token block is derived from the actual extracted colors.\n\nUSAGE GUIDELINES:\n- When to use: analyzing a reference website or mockup to extract its visual hierarchy, typography system, and color ramps.\n- When NOT to use: generating novel color tokens from scratch (ink_generate_palette_tokens) or evaluating code for anti-slop compliance (ink_validate_design).\n- Alternatives: ink_generate_palette_tokens to synthesize new design tokens; ink_capture_viewport to capture visual snapshots.\n\nRETURNS: ResultEnvelope with the detected 'archetype', raw 'colors', converted 'convertedColors' (with OKLCH/hex/token name and gamut-mapping flag), 'unsupportedColors', 'typography', 'shadows', 'layoutDna' and the derived OKLCH token blocks.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urlOrCode": {
+            "type": "string",
+            "description": "Public website URL (e.g. 'https://stripe.com') or raw HTML/CSS code snippet to reverse-engineer"
+          },
+          "extractOklchPalette": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true, converts every extracted color (hex, rgb()/rgba(), oklch()) into gamut-mapped OKLCH tokens using real color math for both inline code and URL inspection. When false, colors are returned as raw literals only."
+          },
+          "target": {
+            "type": "string",
+            "enum": [
+              "srgb",
+              "p3"
+            ],
+            "description": "Gamut target used when converting extracted colors to OKLCH",
+            "default": "srgb"
+          }
+        },
+        "required": [
+          "urlOrCode"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "blocked",
+              "failed"
+            ],
+            "description": "Execution outcome status. 'partial'/'blocked' mean the tool ran but could not satisfy every requested constraint."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Concise, human-readable executive summary of the tool outcome"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "archetype": {
+                "type": "string",
+                "description": "Detected aesthetic archetype (editorial, luxury-dark, brutalist, cyber-tactile, organic)"
+              },
+              "colors": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Raw color literals in source order"
+              },
+              "convertedColors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "source": {
+                      "type": "string",
+                      "description": "Original color literal found in the source"
+                    },
+                    "token": {
+                      "type": "string",
+                      "description": "CSS custom property name when the color was declared as a token"
+                    },
+                    "srgb": {
+                      "type": "object",
+                      "properties": {
+                        "r": {
+                          "type": "number"
+                        },
+                        "g": {
+                          "type": "number"
+                        },
+                        "b": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "r",
+                        "g",
+                        "b"
+                      ],
+                      "additionalProperties": false,
+                      "description": "Normalized sRGB 0-1 channels"
+                    },
+                    "oklch": {
+                      "type": "object",
+                      "properties": {
+                        "l": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1,
+                          "description": "OKLCH lightness 0-1"
+                        },
+                        "c": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 0.5,
+                          "description": "OKLCH chroma 0-0.5"
+                        },
+                        "h": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 360,
+                          "description": "OKLCH hue angle in degrees"
+                        }
+                      },
+                      "required": [
+                        "l",
+                        "c",
+                        "h"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "hex": {
+                      "type": "string",
+                      "description": "Gamut-mapped sRGB fallback hex"
+                    },
+                    "gamutMapped": {
+                      "type": "boolean",
+                      "description": "True when the source color required chroma reduction for the target gamut"
+                    },
+                    "css": {
+                      "type": "string",
+                      "description": "Gamut-mapped OKLCH CSS value"
+                    }
+                  },
+                  "required": [
+                    "source",
+                    "srgb",
+                    "oklch",
+                    "hex",
+                    "gamutMapped",
+                    "css"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Colors converted to OKLCH with real color math (when extractOklchPalette = true)"
+              },
+              "unsupportedColors": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Extracted literals that could not be converted (reported, never silently replaced)"
+              },
+              "typography": {
+                "type": "object",
+                "additionalProperties": {},
+                "description": "Detected font families, font sizes, line heights, and weights"
+              },
+              "shadows": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Extracted elevation shadow definitions"
+              },
+              "layoutDna": {
+                "type": "object",
+                "additionalProperties": {},
+                "description": "Layout DNA analysis (flexbox, grid, gap values, border radii)"
+              },
+              "recommendedOklchPalette": {
+                "type": "string",
+                "description": "CSS token block derived from the extracted colors"
+              },
+              "oklchPaletteCss": {
+                "type": "string",
+                "description": "Full :root block of every converted color"
+              }
+            },
+            "required": [
+              "archetype",
+              "colors",
+              "typography",
+              "shadows",
+              "layoutDna"
+            ],
+            "additionalProperties": true,
+            "description": "Domain-specific typed payload returned by the tool"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operational cautions, craft advice, or non-blocking warnings"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "inputsDigest": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "retrievedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Audit trail, source references, and generated artifact locations"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Actionable sequential recommendations or subsequent tool suggestions"
+          }
+        },
+        "required": [
+          "status",
+          "summary",
+          "data",
+          "warnings"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ink_import_custom_assets",
+      "title": "Import & Configure Web Fonts and Assets",
+      "description": "PURPOSE: Dynamically configure and generate Google Fonts preconnect tags, CSS @import rules, optical line-height variables, and accessible font fallbacks for multilingual Arabic and Latin projects.\n\nBEHAVIOR: Generates HTML link tags, CSS @import rules, and stylesheet font-family declarations purely in-memory. Does not download font binaries or write files to disk directly. Formulates tailored optical line-height variables (1.7-1.85 for Arabic, 1.5-1.6 for Latin) to eliminate clipping.\n\nUSAGE GUIDELINES:\n- When to use: Call when setting up web fonts, adding Arabic typographic scales, or loading bespoke font families into a project.\n- When NOT to use: Do NOT use to synthesize fluid clamp font-size scales (use ink_generate_palette_tokens instead) or to scaffold an entire project (use ink_create_base instead).\n- Alternatives: Use ink_generate_palette_tokens for fluid typography size scales; use ink_create_base for full HTML document scaffolding.\n\nRETURNS: ResultEnvelope containing 'htmlLinkTags', 'cssImportRule', 'cssVariables' with font-family definitions, and an accessible 'fallbackStack'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "primaryFont": {
+            "type": "string",
+            "default": "IBM Plex Sans Arabic",
+            "description": "Primary font family name to import (e.g. 'IBM Plex Sans Arabic', 'Inter', 'Outfit')"
+          },
+          "displayFont": {
+            "type": "string",
+            "description": "Optional display/headline font family name (e.g. 'Amiri', 'Playfair Display', 'Clash Display')"
+          },
+          "weights": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "default": [
+              400,
+              500,
+              600,
+              700
+            ],
+            "description": "Array of numeric font weights to import (e.g. [400, 600, 700])"
+          },
+          "includeArabic": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true, loads Arabic character subsets, sets optical line heights (1.7-1.85), and adds bidi fallbacks"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "blocked",
+              "failed"
+            ],
+            "description": "Execution outcome status. 'partial'/'blocked' mean the tool ran but could not satisfy every requested constraint."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Concise, human-readable executive summary of the tool outcome"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "primaryFont": {
+                "type": "string"
+              },
+              "displayFont": {
+                "type": "string"
+              },
+              "htmlLinkTags": {
+                "type": "string",
+                "description": "Preconnect and Google Fonts <link> tags ready for HTML <head>"
+              },
+              "cssImportRule": {
+                "type": "string",
+                "description": "CSS @import statement for stylesheets"
+              },
+              "cssVariables": {
+                "type": "string",
+                "description": "CSS font-family and line-height custom property variables"
+              },
+              "fallbackStack": {
+                "type": "string",
+                "description": "Accessible system fallback font stack"
+              }
+            },
+            "required": [
+              "primaryFont",
+              "htmlLinkTags",
+              "cssImportRule",
+              "cssVariables",
+              "fallbackStack"
+            ],
+            "additionalProperties": true,
+            "description": "Domain-specific typed payload returned by the tool"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operational cautions, craft advice, or non-blocking warnings"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "inputsDigest": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "retrievedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Audit trail, source references, and generated artifact locations"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Actionable sequential recommendations or subsequent tool suggestions"
+          }
+        },
+        "required": [
+          "status",
+          "summary",
+          "data",
+          "warnings"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ink_generate_gradient",
+      "title": "Generate Perceptual OKLCH/OKLab Gradient",
+      "description": "PURPOSE: Interpolate a perceptual multi-stop gradient in OKLCH or OKLab space with CSS Color 4 gamut mapping and independent sRGB/Display P3 exports.\n\nBEHAVIOR: Computes stops purely in-memory (zero filesystem writes, zero network access, deterministic output). Either two endpoints (`fromOklch`/`toOklch` plus an integer `steps`) or an authored `stops` array with explicit positions and optional alpha. `steps` must be an integer - fractional counts are rejected instead of silently floored. Stop positions are validated (finite, within [0,1], non-decreasing). Alpha below 1 switches to premultiplied interpolation so transparent stops do not produce dark halos. CSS interpolation is always explicit: `linear-gradient(<direction> in oklch|oklab, ...)`. Stops are gamut mapped with the CSS Color 4 binary-search local-MINDE algorithm; the target-gamut CSS and an INDEPENDENT sRGB fallback are both emitted, and Display P3 channels are never encoded as #rrggbb.\n\nGAMUT POLICY: gamut validation is SAMPLED at `gamutValidationSamples` uniform positions. Passing samples do not prove every point of the continuous gradient is in gamut; the returned `gamut` object states the policy, sample count and whether any sample required chroma reduction.\n\nCSS OUTPUT: stop positions are serialized whenever they differ from the implicit even spacing (so authored two-stop positions such as 20%/80% survive), the hue interpolation method is always written (`in oklch shorter hue` / `longer hue` / `increasing hue` / `decreasing hue`), and alpha is written INSIDE the color function (`oklch(L C H / A)`, `color(display-p3 r g b / A)`). Transparency uses CSS Color 4 premultiplied interpolation in the selected space: for polar OKLCH the hue is not premultiplied, so equal-alpha polar stops keep their chroma and hue arc.\n\nCONTRAST POLICY: WCAG/APCA are defined on opaque colors, so transparent stops are alpha-composited over `contrastBackdropHex` (default #ffffff) before measuring. The report states the backdrop, the composited background, the opaque gradient color and the interpolated alpha per sample.\n\nUSAGE GUIDELINES:\n- When to use: smooth brand gradients, background ramps, or accent transitions with authored stop positions and transparency.\n- When NOT to use: scaffolding projects (ink_create_base), token systems (ink_generate_palette_tokens), or one-off contrast checks (ink_validate_design).\n- Alternatives: ink_generate_palette_tokens for full token systems; ink_generate_spacing_scale for layout rhythm.\n\nRETURNS: ResultEnvelope with `stops` (dual-gamut export data per stop), `css`, `cssSrgb`, `cssP3`, `hexes`, the sampled `gamut` report and - when `contrastForegroundHex` is supplied - a contrast report with every sample, the compositing context and the reported worst case.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fromOklch": {
+            "type": "object",
+            "properties": {
+              "l": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "OKLCH lightness 0-1"
+              },
+              "c": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 0.5,
+                "description": "OKLCH chroma 0-0.5"
+              },
+              "h": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 360,
+                "description": "OKLCH hue angle in degrees"
+              }
+            },
+            "required": [
+              "l",
+              "c",
+              "h"
+            ],
+            "additionalProperties": false,
+            "description": "Starting OKLCH color triple. Required unless an authored `stops` array is supplied."
+          },
+          "toOklch": {
+            "$ref": "#/properties/fromOklch",
+            "description": "Ending OKLCH color triple. Required unless an authored `stops` array is supplied."
+          },
+          "stops": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "oklch": {
+                  "type": "object",
+                  "properties": {
+                    "l": {
+                      "$ref": "#/properties/fromOklch/properties/l"
+                    },
+                    "c": {
+                      "$ref": "#/properties/fromOklch/properties/c"
+                    },
+                    "h": {
+                      "$ref": "#/properties/fromOklch/properties/h"
+                    }
+                  },
+                  "required": [
+                    "l",
+                    "c",
+                    "h"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Stop color in OKLCH"
+                },
+                "position": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "Explicit stop position in [0, 1]. Defaults to i / (count - 1). Positions must be non-decreasing."
+                },
+                "alpha": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "Stop alpha in [0, 1]; below 1 switches interpolation to premultiplied mode"
+                }
+              },
+              "required": [
+                "oklch"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 2,
+            "maxItems": 16,
+            "description": "Authored stop list with explicit positions (2-16). Overrides fromOklch/toOklch when provided."
+          },
+          "steps": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 16,
+            "default": 5,
+            "description": "Number of interpolated stops (integer 2-16). Fractional values are rejected, not floored."
+          },
+          "interpolationSpace": {
+            "type": "string",
+            "enum": [
+              "oklch",
+              "oklab"
+            ],
+            "default": "oklch",
+            "description": "Interpolation space: 'oklch' (polar, hue-path aware) or 'oklab' (rectangular). CSS interpolation is always explicit (`in oklch` / `in oklab`)."
+          },
+          "huePath": {
+            "type": "string",
+            "enum": [
+              "shorter",
+              "longer",
+              "increasing",
+              "decreasing"
+            ],
+            "default": "shorter",
+            "description": "Hue interpolation path: 'shorter' arc in (-180,180], 'longer' arc in [180,540), 'increasing' positive delta, 'decreasing' negative delta"
+          },
+          "direction": {
+            "type": "string",
+            "default": "to right",
+            "description": "CSS linear-gradient direction (e.g. 'to right', '135deg')"
+          },
+          "target": {
+            "type": "string",
+            "enum": [
+              "srgb",
+              "p3"
+            ],
+            "description": "Gamut target for chroma mapping and the primary export",
+            "default": "srgb"
+          },
+          "gamutValidationSamples": {
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 512,
+            "default": 64,
+            "description": "Number of uniform positions used for SAMPLED gamut validation (8-512). Sampled validation does not prove every point of the continuous gradient is in gamut."
+          },
+          "contrastForegroundHex": {
+            "type": "string",
+            "description": "Optional foreground hex to sample contrast against the gradient; reports every sample plus the worst case"
+          },
+          "contrastSamplePositions": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 1,
+            "maxItems": 64,
+            "description": "Explicit sample positions in [0,1] for the contrast report (defaults to the emitted stop positions)"
+          },
+          "contrastTarget": {
+            "type": "string",
+            "enum": [
+              "aa",
+              "aaa",
+              "aa-large",
+              "none"
+            ],
+            "description": "Contrast target applied to the gradient contrast report",
+            "default": "aa"
+          },
+          "contrastBackdropHex": {
+            "type": "string",
+            "default": "#ffffff",
+            "description": "Underlying canvas color (hex) that transparent gradient stops are composited over before contrast is measured (default white). WCAG/APCA are defined on opaque colors, so a transparent gradient cannot be measured without this context."
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "blocked",
+              "failed"
+            ],
+            "description": "Execution outcome status. 'partial'/'blocked' mean the tool ran but could not satisfy every requested constraint."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Concise, human-readable executive summary of the tool outcome"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "stops": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "t": {
+                      "type": "number"
+                    },
+                    "position": {
+                      "type": "number"
+                    },
+                    "oklch": {
+                      "type": "object",
+                      "properties": {
+                        "l": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1,
+                          "description": "OKLCH lightness 0-1"
+                        },
+                        "c": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 0.5,
+                          "description": "OKLCH chroma 0-0.5"
+                        },
+                        "h": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 360,
+                          "description": "OKLCH hue angle in degrees"
+                        }
+                      },
+                      "required": [
+                        "l",
+                        "c",
+                        "h"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "alpha": {
+                      "type": "number"
+                    },
+                    "hex": {
+                      "type": "string",
+                      "description": "Independent sRGB fallback hex (never Display P3 channels)"
+                    },
+                    "hexWithAlpha": {
+                      "type": "string"
+                    },
+                    "srgb": {
+                      "type": "object",
+                      "properties": {
+                        "r": {
+                          "type": "number"
+                        },
+                        "g": {
+                          "type": "number"
+                        },
+                        "b": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "r",
+                        "g",
+                        "b"
+                      ],
+                      "additionalProperties": false,
+                      "description": "sRGB 0-1 channels"
+                    },
+                    "channels": {
+                      "type": "object",
+                      "properties": {
+                        "r": {
+                          "type": "number"
+                        },
+                        "g": {
+                          "type": "number"
+                        },
+                        "b": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "r",
+                        "g",
+                        "b"
+                      ],
+                      "additionalProperties": false,
+                      "description": "Channels in the TARGET gamut (P3 channels when target = p3)"
+                    },
+                    "css": {
+                      "type": "string",
+                      "description": "Target-gamut CSS color (oklch(...) or color(display-p3 r g b))"
+                    },
+                    "srgbCss": {
+                      "type": "string"
+                    },
+                    "clipped": {
+                      "type": "boolean"
+                    },
+                    "inGamut": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "t",
+                    "position",
+                    "oklch",
+                    "alpha",
+                    "hex",
+                    "hexWithAlpha",
+                    "srgb",
+                    "channels",
+                    "css",
+                    "srgbCss",
+                    "clipped",
+                    "inGamut"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Gamut-mapped gradient stops with dual sRGB/P3 export data"
+              },
+              "css": {
+                "type": "string",
+                "description": "Ready-to-paste CSS linear-gradient in the target gamut with explicit `in oklch|oklab` interpolation"
+              },
+              "cssSrgb": {
+                "type": "string",
+                "description": "Same gradient using independently mapped sRGB colors (hex stops)"
+              },
+              "cssP3": {
+                "type": "string",
+                "description": "Same gradient using independently mapped Display P3 colors"
+              },
+              "hexes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Hex ramp of the interpolated stops (sRGB fallbacks)"
+              },
+              "target": {
+                "type": "string",
+                "enum": [
+                  "srgb",
+                  "p3"
+                ],
+                "description": "Gamut target for mapping and export: 'srgb' or 'p3' (display-p3)"
+              },
+              "interpolationSpace": {
+                "type": "string",
+                "enum": [
+                  "oklch",
+                  "oklab"
+                ]
+              },
+              "huePath": {
+                "type": "string",
+                "enum": [
+                  "shorter",
+                  "longer",
+                  "increasing",
+                  "decreasing"
+                ]
+              },
+              "direction": {
+                "type": "string"
+              },
+              "gamut": {
+                "type": "object",
+                "properties": {
+                  "policy": {
+                    "type": "string",
+                    "const": "sampled"
+                  },
+                  "samplesChecked": {
+                    "type": "number"
+                  },
+                  "allSamplesInGamut": {
+                    "type": "boolean"
+                  },
+                  "mappedSamples": {
+                    "type": "number"
+                  },
+                  "maxDeltaEOK": {
+                    "type": "number"
+                  },
+                  "note": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "policy",
+                  "samplesChecked",
+                  "allSamplesInGamut",
+                  "mappedSamples",
+                  "maxDeltaEOK",
+                  "note"
+                ],
+                "additionalProperties": false
+              },
+              "contrast": {
+                "type": "object",
+                "properties": {
+                  "foregroundHex": {
+                    "type": "string"
+                  },
+                  "backdropHex": {
+                    "type": "string",
+                    "description": "Canvas color used for alpha compositing (default #ffffff)"
+                  },
+                  "compositedAlpha": {
+                    "type": "boolean",
+                    "description": "True when any sampled position had alpha < 1 and was composited"
+                  },
+                  "positions": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    }
+                  },
+                  "samples": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "position": {
+                          "type": "number"
+                        },
+                        "backgroundHex": {
+                          "type": "string",
+                          "description": "Composited background actually measured"
+                        },
+                        "backgroundHexOpaque": {
+                          "type": "string",
+                          "description": "Gradient color as an opaque sRGB fallback"
+                        },
+                        "backgroundAlpha": {
+                          "type": "number"
+                        },
+                        "backdropHex": {
+                          "type": "string"
+                        },
+                        "ratio": {
+                          "type": "number"
+                        },
+                        "ratioExact": {
+                          "type": "number"
+                        },
+                        "grade": {
+                          "type": "string"
+                        },
+                        "normalTextAA": {
+                          "type": "boolean"
+                        },
+                        "normalTextAAA": {
+                          "type": "boolean"
+                        },
+                        "apcaLc": {
+                          "type": "number"
+                        },
+                        "apcaAbs": {
+                          "type": "number"
+                        },
+                        "apcaGuidance": {
+                          "type": "string"
+                        },
+                        "inTargetGamut": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "position",
+                        "backgroundHex",
+                        "backgroundHexOpaque",
+                        "backgroundAlpha",
+                        "backdropHex",
+                        "ratio",
+                        "ratioExact",
+                        "grade",
+                        "normalTextAA",
+                        "normalTextAAA",
+                        "apcaLc",
+                        "apcaAbs",
+                        "apcaGuidance",
+                        "inTargetGamut"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "worstCase": {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  "requiredRatio": {
+                    "type": "number"
+                  },
+                  "meetsTarget": {
+                    "type": "boolean"
+                  },
+                  "target": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "policy": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "foregroundHex",
+                  "backdropHex",
+                  "compositedAlpha",
+                  "positions",
+                  "samples",
+                  "worstCase",
+                  "requiredRatio",
+                  "meetsTarget",
+                  "target",
+                  "policy"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "stops",
+              "css",
+              "cssSrgb",
+              "cssP3",
+              "hexes",
+              "target",
+              "interpolationSpace",
+              "huePath",
+              "direction",
+              "gamut"
+            ],
+            "additionalProperties": true,
+            "description": "Domain-specific typed payload returned by the tool"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operational cautions, craft advice, or non-blocking warnings"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "inputsDigest": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "retrievedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Audit trail, source references, and generated artifact locations"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Actionable sequential recommendations or subsequent tool suggestions"
+          }
+        },
+        "required": [
+          "status",
+          "summary",
+          "data",
+          "warnings"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ink_generate_spacing_scale",
+      "title": "Generate Fluid Spacing Scale",
+      "description": "PURPOSE: Generate a modular spacing scale (size(n) = basePx * ratio^n) with px/rem and optional fluid clamp() tokens.\n\nBEHAVIOR: Computes spacing steps purely in-memory from a base size and modular ratio, optionally emitting fluid clamp() tokens scaled between minVw and maxVw. Zero filesystem writes and zero network access; deterministic output for identical inputs. The nine-step 3xs..3xl preset remains the default, and `steps`/`stepCount` allow a custom range or name list. The fluid lower bound is configurable through `fluidMinFactor` (default 0.85) and rem conversion honours `rootFontPx`.\n\nVALIDATION: `basePx` must be a finite number > 0; `ratio` must be a finite number >= 1 (a decreasing scale is rejected unless explicitly allowed); when `fluid` is true both viewports must be positive with maxVw > minVw; `fluidMinFactor` must lie in (0, 1]. Invalid input fails fast with an explicit message instead of emitting NaN/Infinity CSS.\n\nUSAGE GUIDELINES:\n- When to use: establishing layout rhythm, gap tokens, or padding scales for a design system.\n- When NOT to use: color tokens (ink_generate_palette_tokens), gradients (ink_generate_gradient), or arbitrary fluid clamps (ink_generate_fluid_scale).\n- Alternatives: ink_generate_fluid_scale for one-off clamp() values; ink_generate_palette_tokens for a combined color+spacing system.\n\nRETURNS: ResultEnvelope with the `tokens` scale map (px/rem/clamp/fluidMinPx/step index), a ready-to-paste CSS ':root' block, and the resolved scale parameters.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "basePx": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 400,
+            "default": 16,
+            "description": "Base spacing step in px (modular ratio anchor)"
+          },
+          "ratio": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 4,
+            "default": 1.25,
+            "description": "Modular spacing ratio. Must be >= 1 so the scale increases monotonically."
+          },
+          "fluid": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, emits fluid clamp() tokens scaled between minVw and maxVw"
+          },
+          "minVw": {
+            "type": "number",
+            "minimum": 200,
+            "maximum": 800,
+            "default": 360,
+            "description": "Minimum fluid viewport width in px (200-800)"
+          },
+          "maxVw": {
+            "type": "number",
+            "minimum": 801,
+            "maximum": 2560,
+            "default": 1440,
+            "description": "Maximum fluid viewport width in px (801-2560); must exceed minVw"
+          },
+          "fluidMinFactor": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 1,
+            "default": 0.85,
+            "description": "Lower fluid bound as a fraction of each step value (0-1]"
+          },
+          "rootFontPx": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 64,
+            "default": 16,
+            "description": "Root font size used for rem conversion"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "n": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "name",
+                "n"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 2,
+            "maxItems": 24,
+            "description": "Custom step definitions (2-24). When omitted the nine-step 3xs..3xl preset is used."
+          },
+          "stepCount": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 24,
+            "description": "Alternative to `steps`: generate this many steps centred on the base size"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "blocked",
+              "failed"
+            ],
+            "description": "Execution outcome status. 'partial'/'blocked' mean the tool ran but could not satisfy every requested constraint."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Concise, human-readable executive summary of the tool outcome"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "tokens": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "px": {
+                      "type": "number"
+                    },
+                    "rem": {
+                      "type": "string"
+                    },
+                    "clamp": {
+                      "type": "string"
+                    },
+                    "fluidMinPx": {
+                      "type": "number"
+                    },
+                    "n": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "px",
+                    "rem"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Spacing scale tokens with px/rem/clamp values"
+              },
+              "css": {
+                "type": "string",
+                "description": "Ready-to-paste CSS block with :root spacing variables"
+              },
+              "basePx": {
+                "type": "number"
+              },
+              "ratio": {
+                "type": "number"
+              },
+              "rootFontPx": {
+                "type": "number"
+              },
+              "fluidMinFactor": {
+                "type": "number"
+              },
+              "viewport": {
+                "type": "object",
+                "properties": {
+                  "minVw": {
+                    "type": "number"
+                  },
+                  "maxVw": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "minVw",
+                  "maxVw"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "tokens",
+              "css",
+              "basePx",
+              "ratio",
+              "rootFontPx",
+              "fluidMinFactor",
+              "viewport"
+            ],
+            "additionalProperties": true,
+            "description": "Domain-specific typed payload returned by the tool"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operational cautions, craft advice, or non-blocking warnings"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "inputsDigest": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "retrievedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Audit trail, source references, and generated artifact locations"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Actionable sequential recommendations or subsequent tool suggestions"
+          }
+        },
+        "required": [
+          "status",
+          "summary",
+          "data",
+          "warnings"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ink_generate_fluid_scale",
+      "title": "Generate Fluid Clamp Scale",
+      "description": "PURPOSE: Generate arbitrary CSS fluid clamp() values from explicit minimum/maximum sizes and viewport bounds.\n\nBEHAVIOR: Uses the exact linear formula slope = (maxSize - minSize) / (maxViewport - minViewport), intercept = minSize - minViewport * slope, serialized as clamp(minSize/root rem, intercept/root rem + slope*100 vw, maxSize/root rem). Purely in-memory: zero filesystem writes, zero network access, deterministic output. `rootFontPx` is configurable (default 16), so non-16px roots are handled correctly.\n\nVALIDATION: every numeric input must be finite; sizes and viewports must be > 0; maxViewportPx must be strictly greater than minViewportPx (equal or reversed bounds are rejected instead of producing `-Infinityrem + Infinityvw`); every entry must satisfy maxPx >= minPx. Invalid input fails fast with an explicit message, so invalid CSS can never be generated.\n\nUSAGE GUIDELINES:\n- When to use: one-off fluid sizing (fluid hero type, fluid spacing, fluid radii) or verifying the endpoint accuracy of a clamp.\n- When NOT to use: whole type scales (ink_generate_palette_tokens with includeTypography, or ink_create_base) or complete spacing scales (ink_generate_spacing_scale).\n- Alternatives: ink_generate_spacing_scale for modular spacing; ink_generate_palette_tokens for a full token system.\n\nRETURNS: ResultEnvelope with one `values` entry per token (slope, intercept, clampCss and the measured endpoint values/errors), a ready-to-paste :root CSS block and the documented endpoint tolerance.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Token name (e.g. 'display' or 'gap-md')"
+                },
+                "minPx": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Minimum size in px at minViewportPx"
+                },
+                "maxPx": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Maximum size in px at maxViewportPx"
+                }
+              },
+              "required": [
+                "name",
+                "minPx",
+                "maxPx"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 32,
+            "description": "Explicit token list (up to 32). When omitted a single anonymous entry is generated from minSizePx/maxSizePx."
+          },
+          "minSizePx": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "default": 16,
+            "description": "Minimum size in px for the anonymous/default entry"
+          },
+          "maxSizePx": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "default": 32,
+            "description": "Maximum size in px for the anonymous/default entry"
+          },
+          "minViewportPx": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 800,
+            "default": 360,
+            "description": "Minimum viewport width in px (must be > 0)"
+          },
+          "maxViewportPx": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 4000,
+            "default": 1440,
+            "description": "Maximum viewport width in px; must be strictly greater than minViewportPx"
+          },
+          "rootFontPx": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 64,
+            "default": 16,
+            "description": "Root font size used for all rem conversions"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "rem",
+              "px"
+            ],
+            "default": "rem",
+            "description": "Serialization unit for the clamp bounds"
+          },
+          "remPrecision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 6,
+            "description": "Decimal places for rem terms (default 5)"
+          },
+          "vwPrecision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 6,
+            "description": "Decimal places for the vw term (default 4)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "blocked",
+              "failed"
+            ],
+            "description": "Execution outcome status. 'partial'/'blocked' mean the tool ran but could not satisfy every requested constraint."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Concise, human-readable executive summary of the tool outcome"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "minPx": {
+                      "type": "number"
+                    },
+                    "maxPx": {
+                      "type": "number"
+                    },
+                    "slope": {
+                      "type": "number"
+                    },
+                    "intercept": {
+                      "type": "number"
+                    },
+                    "clampCss": {
+                      "type": "string"
+                    },
+                    "valueAtMinViewportPx": {
+                      "type": "number"
+                    },
+                    "valueAtMaxViewportPx": {
+                      "type": "number"
+                    },
+                    "endpointErrorPx": {
+                      "type": "object",
+                      "properties": {
+                        "atMin": {
+                          "type": "number"
+                        },
+                        "atMax": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "atMin",
+                        "atMax"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "minPx",
+                    "maxPx",
+                    "slope",
+                    "intercept",
+                    "clampCss",
+                    "valueAtMinViewportPx",
+                    "valueAtMaxViewportPx",
+                    "endpointErrorPx"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "One entry per token with the exact slope/intercept and endpoint verification"
+              },
+              "css": {
+                "type": "string",
+                "description": "Ready-to-paste :root CSS block"
+              },
+              "rootFontPx": {
+                "type": "number"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "rem",
+                  "px"
+                ]
+              },
+              "viewport": {
+                "type": "object",
+                "properties": {
+                  "minViewportPx": {
+                    "type": "number"
+                  },
+                  "maxViewportPx": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "minViewportPx",
+                  "maxViewportPx"
+                ],
+                "additionalProperties": false
+              },
+              "endpointTolerancePx": {
+                "type": "number",
+                "description": "Documented rounding tolerance used for endpoint verification"
+              },
+              "containsInvalidNumbers": {
+                "type": "boolean",
+                "const": false,
+                "description": "Always false: invalid numeric inputs are rejected before generation"
+              }
+            },
+            "required": [
+              "values",
+              "css",
+              "rootFontPx",
+              "unit",
+              "viewport",
+              "endpointTolerancePx",
+              "containsInvalidNumbers"
+            ],
+            "additionalProperties": true,
+            "description": "Domain-specific typed payload returned by the tool"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operational cautions, craft advice, or non-blocking warnings"
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "inputsDigest": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "retrievedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "artifacts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Audit trail, source references, and generated artifact locations"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Actionable sequential recommendations or subsequent tool suggestions"
+          }
+        },
+        "required": [
+          "status",
+          "summary",
+          "data",
+          "warnings"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    }
+  ]
+}

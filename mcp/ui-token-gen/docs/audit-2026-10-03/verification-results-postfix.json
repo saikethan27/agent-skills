@@ -1,0 +1,929 @@
+{
+  "verifiedAt": "2026-10-03T13:10:09.129Z",
+  "apcaAlgorithm": "APCA-W3 0.98G (0.1.9-4g constants)",
+  "protocol": {
+    "serverInfo": {
+      "name": "mcp-ink-design",
+      "version": "1.3.0"
+    },
+    "toolCount": 14,
+    "tools": [
+      {
+        "name": "ink_create_base",
+        "requiredInputs": [],
+        "inputProperties": 7,
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_generate_palette_tokens",
+        "requiredInputs": [],
+        "inputProperties": 23,
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_craft_component",
+        "requiredInputs": [],
+        "inputProperties": 5,
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_build_threejs_experience",
+        "requiredInputs": [],
+        "inputProperties": 4,
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_generate_script_logic",
+        "requiredInputs": [],
+        "inputProperties": 3,
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_audit_security",
+        "requiredInputs": [
+          "code"
+        ],
+        "inputProperties": 2,
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_validate_design",
+        "requiredInputs": [
+          "code"
+        ],
+        "inputProperties": 8,
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_run_python_tests",
+        "requiredInputs": [],
+        "inputProperties": 5,
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true
+        }
+      },
+      {
+        "name": "ink_capture_viewport",
+        "requiredInputs": [
+          "htmlOrUrl"
+        ],
+        "inputProperties": 3,
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true
+        }
+      },
+      {
+        "name": "ink_inspect_website_style",
+        "requiredInputs": [
+          "urlOrCode"
+        ],
+        "inputProperties": 3,
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true
+        }
+      },
+      {
+        "name": "ink_import_custom_assets",
+        "requiredInputs": [],
+        "inputProperties": 4,
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_generate_gradient",
+        "requiredInputs": [],
+        "inputProperties": 13,
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_generate_spacing_scale",
+        "requiredInputs": [],
+        "inputProperties": 9,
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "ink_generate_fluid_scale",
+        "requiredInputs": [],
+        "inputProperties": 9,
+        "hasOutputSchema": true,
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      }
+    ],
+    "validCall": {
+      "isError": false,
+      "hasStructuredContent": true,
+      "textMatchesStructured": true
+    },
+    "invalidInput": {
+      "fractionalGradientSteps": {
+        "isError": true,
+        "message": "MCP error -32602: Input validation error: Invalid arguments for tool ink_generate_gradient: Expected integer, received float at steps"
+      },
+      "equalViewports": {
+        "isError": true,
+        "message": "MCP error -32602: Input validation error: Invalid arguments for tool ink_generate_spacing_scale: Number must be greater than or equal to 801 at maxVw"
+      },
+      "reversedViewports": {
+        "isError": true,
+        "message": "MCP error -32602: Input validation error: Invalid arguments for tool ink_generate_spacing_scale: Number must be less than or equal to 800 at minVw\nNumber must be greater than or equal to 801 at maxVw"
+      },
+      "zeroRatio": {
+        "isError": true,
+        "message": "MCP error -32602: Input validation error: Invalid arguments for tool ink_generate_spacing_scale: Number must be greater than or equal to 1 at ratio"
+      },
+      "negativeBase": {
+        "isError": true,
+        "message": "MCP error -32602: Input validation error: Invalid arguments for tool ink_generate_spacing_scale: Number must be greater than or equal to 1 at basePx"
+      },
+      "negativeFluidFactor": {
+        "isError": true,
+        "message": "[\n  {\n    \"code\": \"custom\",\n    \"message\": \"maxViewportPx must be strictly greater than minViewportPx (equal or reversed bounds produce an infinite slope)\",\n    \"path\": [\n      \"maxViewportPx\"\n    ]\n  }\n]"
+      }
+    }
+  },
+  "wcag": {
+    "thresholds": {
+      "normalTextAA": 4.5,
+      "normalTextAAA": 7,
+      "largeTextAA": 3,
+      "largeTextAAA": 4.5,
+      "uiComponent": 3
+    },
+    "rounding": "decisions use ratioExact; the displayed ratio is rounded to 2 decimals",
+    "cases": [
+      {
+        "foreground": "#148700",
+        "ratioExact": 4.495333659863548,
+        "ratio": 4.5,
+        "normalTextAA": false,
+        "displayWouldSuggestAA": true,
+        "falsePositive": false
+      },
+      {
+        "foreground": "#ffffff",
+        "ratioExact": 21,
+        "ratio": 21,
+        "normalTextAA": true,
+        "displayWouldSuggestAA": true,
+        "falsePositive": false
+      },
+      {
+        "foreground": "#777777",
+        "ratioExact": 4.68949989000882,
+        "ratio": 4.69,
+        "normalTextAA": true,
+        "displayWouldSuggestAA": true,
+        "falsePositive": false
+      },
+      {
+        "foreground": "#148701",
+        "ratioExact": 4.495771952827792,
+        "ratio": 4.5,
+        "normalTextAA": false,
+        "displayWouldSuggestAA": true,
+        "falsePositive": false
+      },
+      {
+        "foreground": "#0a0a0a",
+        "ratioExact": 1.0607053967097675,
+        "ratio": 1.06,
+        "normalTextAA": false,
+        "displayWouldSuggestAA": false,
+        "falsePositive": false
+      },
+      {
+        "foreground": "#595959",
+        "ratioExact": 2.9979745649422775,
+        "ratio": 3,
+        "normalTextAA": false,
+        "displayWouldSuggestAA": false,
+        "falsePositive": false
+      }
+    ],
+    "boundaryClassification": {
+      "justBelow": {
+        "grade": "AA Large",
+        "normalTextAA": false,
+        "normalTextAAA": false,
+        "largeTextAA": true,
+        "largeTextAAA": false,
+        "uiComponentAA": true
+      },
+      "exactThreshold": {
+        "grade": "AA",
+        "normalTextAA": true,
+        "normalTextAAA": false,
+        "largeTextAA": true,
+        "largeTextAAA": true,
+        "uiComponentAA": true
+      },
+      "aaa": {
+        "grade": "AAA",
+        "normalTextAA": true,
+        "normalTextAAA": true,
+        "largeTextAA": true,
+        "largeTextAAA": true,
+        "uiComponentAA": true
+      }
+    }
+  },
+  "apca": {
+    "algorithm": "APCA-W3 0.98G (0.1.9-4g constants)",
+    "tolerance": 0.01,
+    "vectors": [
+      {
+        "fg": "#777777",
+        "bg": "#ffffff",
+        "lcExact": 71.11110332561125,
+        "referenceLc": 71.1111,
+        "delta": 0.0000033256112601520726,
+        "polarity": "normal",
+        "ok": true
+      },
+      {
+        "fg": "#888888",
+        "bg": "#777777",
+        "lcExact": -7.320188639714409,
+        "referenceLc": -7.3202,
+        "delta": 0.000011360285590455987,
+        "polarity": "reverse",
+        "ok": true
+      },
+      {
+        "fg": "#ffffff",
+        "bg": "#000000",
+        "lcExact": -107.88473318309848,
+        "referenceLc": -107.8847,
+        "delta": 0.000033183098480549233,
+        "polarity": "reverse",
+        "ok": true
+      },
+      {
+        "fg": "#000000",
+        "bg": "#ffffff",
+        "lcExact": 106.04067321268862,
+        "referenceLc": 106.0407,
+        "delta": 0.000026787311384168788,
+        "polarity": "normal",
+        "ok": true
+      },
+      {
+        "fg": "#000000",
+        "bg": "#000000",
+        "lcExact": 0,
+        "referenceLc": 0,
+        "delta": 0,
+        "polarity": "identical",
+        "ok": true
+      },
+      {
+        "fg": "#010101",
+        "bg": "#020202",
+        "lcExact": 0,
+        "referenceLc": 0,
+        "delta": 0,
+        "polarity": "identical",
+        "ok": true
+      },
+      {
+        "fg": "#050505",
+        "bg": "#000000",
+        "lcExact": 0,
+        "referenceLc": null,
+        "delta": null,
+        "polarity": "identical",
+        "ok": null
+      },
+      {
+        "fg": "#f1f5f9",
+        "bg": "#0e131f",
+        "lcExact": -100.25123077397826,
+        "referenceLc": null,
+        "delta": null,
+        "polarity": "reverse",
+        "ok": null
+      }
+    ]
+  },
+  "gamut": {
+    "policy": {
+      "algorithm": "CSS Color 4 binary search with local MINDE",
+      "jnd": 0.02,
+      "serializedChannelTolerance": 0.00196078431372549
+    },
+    "p3OnlyColor": {
+      "color": {
+        "l": 0.69,
+        "c": 0.26,
+        "h": 142
+      },
+      "inSrgb": false,
+      "inP3": true,
+      "p3Export": {
+        "css": "color(display-p3 0.2940 0.7364 0.1084)",
+        "hex": "#00be00",
+        "channels": {
+          "r": 0.29396967703308646,
+          "g": 0.7364024267017134,
+          "b": 0.10836443617881161
+        }
+      },
+      "srgbExport": {
+        "hex": "#00be00",
+        "chroma": 0.23662192034170362
+      },
+      "naiveP3ChannelsAsHex": "#4bbc1c",
+      "p3ChannelsNeverEncodedAsHex": true,
+      "hexEqualsIndependentSrgbMapping": true
+    },
+    "outsideBoth": {
+      "color": {
+        "l": 0.7,
+        "c": 0.25,
+        "h": 30
+      },
+      "inSrgb": false,
+      "inP3": false,
+      "srgb": {
+        "target": "srgb",
+        "inGamut": false,
+        "mapped": true,
+        "clipped": true,
+        "iterations": 7,
+        "deltaEOK": 0.04695618969551288,
+        "original": {
+          "l": 0.7,
+          "c": 0.25,
+          "h": 30
+        },
+        "oklch": {
+          "l": 0.6831016109300456,
+          "c": 0.20619577478362072,
+          "h": 30.18163481008969
+        },
+        "channels": {
+          "r": 1,
+          "g": 0.3451350639279618,
+          "b": 0.26457499467690593
+        },
+        "srgb": {
+          "r": 1,
+          "g": 0.3451350639279618,
+          "b": 0.26457499467690593
+        },
+        "hex": "#ff5843",
+        "css": "oklch(0.683 0.206 30)",
+        "srgbCss": "oklch(0.683 0.206 30)",
+        "inSrgb": true
+      },
+      "p3": {
+        "target": "p3",
+        "inGamut": false,
+        "mapped": true,
+        "clipped": true,
+        "iterations": 0,
+        "deltaEOK": 0.004800369149501523,
+        "original": {
+          "l": 0.7,
+          "c": 0.25,
+          "h": 30
+        },
+        "oklch": {
+          "l": 0.6960345458952969,
+          "c": 0.24730104378305606,
+          "h": 30.042709288789467
+        },
+        "channels": {
+          "r": 1,
+          "g": 0.3357555403829536,
+          "b": 0.24398011532239833
+        },
+        "srgb": {
+          "r": 1,
+          "g": 0.3451350639279618,
+          "b": 0.26457499467690593
+        },
+        "hex": "#ff5843",
+        "css": "color(display-p3 1.0000 0.3358 0.2440)",
+        "srgbCss": "oklch(0.683 0.206 30)",
+        "inSrgb": false
+      }
+    },
+    "achromaticAndBoundaries": {
+      "achromaticSrgb": {
+        "target": "srgb",
+        "inGamut": true,
+        "mapped": false,
+        "clipped": false,
+        "iterations": 0,
+        "deltaEOK": 0,
+        "original": {
+          "l": 0.5,
+          "c": 0,
+          "h": 45
+        },
+        "oklch": {
+          "l": 0.5,
+          "c": 0,
+          "h": 45
+        },
+        "channels": {
+          "r": 0.3885728590463344,
+          "g": 0.3885728590463344,
+          "b": 0.3885728590463344
+        },
+        "srgb": {
+          "r": 0.3885728590463344,
+          "g": 0.3885728590463344,
+          "b": 0.3885728590463344
+        },
+        "hex": "#636363",
+        "css": "oklch(0.500 0.000 45)",
+        "srgbCss": "oklch(0.500 0.000 45)",
+        "inSrgb": true
+      },
+      "black": {
+        "target": "srgb",
+        "inGamut": false,
+        "mapped": true,
+        "clipped": true,
+        "iterations": 0,
+        "deltaEOK": 0,
+        "original": {
+          "l": 0,
+          "c": 0.02,
+          "h": 45
+        },
+        "oklch": {
+          "l": 0,
+          "c": 0,
+          "h": 0
+        },
+        "channels": {
+          "r": 0,
+          "g": 0,
+          "b": 0
+        },
+        "srgb": {
+          "r": 0,
+          "g": 0,
+          "b": 0
+        },
+        "hex": "#000000",
+        "css": "oklch(0.000 0.000 0)",
+        "srgbCss": "oklch(0.000 0.000 0)",
+        "inSrgb": true
+      },
+      "white": {
+        "target": "p3",
+        "inGamut": false,
+        "mapped": true,
+        "clipped": true,
+        "iterations": 0,
+        "deltaEOK": 0,
+        "original": {
+          "l": 1,
+          "c": 0.02,
+          "h": 45
+        },
+        "oklch": {
+          "l": 1,
+          "c": 0,
+          "h": 0
+        },
+        "channels": {
+          "r": 1,
+          "g": 1,
+          "b": 1
+        },
+        "srgb": {
+          "r": 1,
+          "g": 1,
+          "b": 1
+        },
+        "hex": "#ffffff",
+        "css": "color(display-p3 1.0000 1.0000 1.0000)",
+        "srgbCss": "oklch(1.000 0.000 0)",
+        "inSrgb": true
+      }
+    },
+    "serializationRounding": {
+      "requested": {
+        "l": 0.7,
+        "c": 0.4,
+        "h": 30
+      },
+      "rounded": {
+        "l": 0.7,
+        "c": 0.192,
+        "h": 30,
+        "adjusted": true,
+        "css": "oklch(0.700 0.192 30)"
+      },
+      "serializedInGamut": true
+    }
+  },
+  "palettes": [
+    {
+      "mood": "editorial",
+      "statusWithCorrection": "success",
+      "failedWithCorrection": [],
+      "adjustments": 3,
+      "statusWithoutCorrection": "blocked",
+      "mutedTextOnBgSurface": {
+        "ratioExact": 3.593176831391556,
+        "ratio": 3.59,
+        "passed": false,
+        "audited": true,
+        "reportedInFailedPairings": true
+      },
+      "auditedPairingCount": 12,
+      "p3ExportContrastMismatches": 0,
+      "serializedTokensInGamut": true
+    },
+    {
+      "mood": "cyber-tactile",
+      "statusWithCorrection": "success",
+      "failedWithCorrection": [],
+      "adjustments": 3,
+      "statusWithoutCorrection": "blocked",
+      "mutedTextOnBgSurface": {
+        "ratioExact": 3.922297550371039,
+        "ratio": 3.92,
+        "passed": false,
+        "audited": true,
+        "reportedInFailedPairings": true
+      },
+      "auditedPairingCount": 12,
+      "p3ExportContrastMismatches": 0,
+      "serializedTokensInGamut": true
+    },
+    {
+      "mood": "neo-brutalist",
+      "statusWithCorrection": "success",
+      "failedWithCorrection": [],
+      "adjustments": 9,
+      "statusWithoutCorrection": "blocked",
+      "mutedTextOnBgSurface": {
+        "ratioExact": 4.990927405539125,
+        "ratio": 4.99,
+        "passed": true,
+        "audited": true,
+        "reportedInFailedPairings": false
+      },
+      "auditedPairingCount": 12,
+      "p3ExportContrastMismatches": 0,
+      "serializedTokensInGamut": true
+    },
+    {
+      "mood": "luxury-dark",
+      "statusWithCorrection": "success",
+      "failedWithCorrection": [],
+      "adjustments": 3,
+      "statusWithoutCorrection": "blocked",
+      "mutedTextOnBgSurface": {
+        "ratioExact": 3.468950849228043,
+        "ratio": 3.47,
+        "passed": false,
+        "audited": true,
+        "reportedInFailedPairings": true
+      },
+      "auditedPairingCount": 12,
+      "p3ExportContrastMismatches": 0,
+      "serializedTokensInGamut": true
+    },
+    {
+      "mood": "organic-modern",
+      "statusWithCorrection": "success",
+      "failedWithCorrection": [],
+      "adjustments": 3,
+      "statusWithoutCorrection": "blocked",
+      "mutedTextOnBgSurface": {
+        "ratioExact": 3.155709075100169,
+        "ratio": 3.16,
+        "passed": false,
+        "audited": true,
+        "reportedInFailedPairings": true
+      },
+      "auditedPairingCount": 12,
+      "p3ExportContrastMismatches": 0,
+      "serializedTokensInGamut": true
+    }
+  ],
+  "palettePresets": {
+    "editorial": 215,
+    "cyber-tactile": 160,
+    "neo-brutalist": 45,
+    "luxury-dark": 250,
+    "organic-modern": 125
+  },
+  "defaultPaletteEnvelope": {
+    "status": "success",
+    "pairingCount": 12,
+    "failedPairings": [],
+    "includeArabicTokens": true
+  },
+  "includeArabicTokensHasEffect": true,
+  "gradients": {
+    "authored": {
+      "status": "success",
+      "positions": [
+        0,
+        0.35,
+        1
+      ],
+      "alphas": [
+        1,
+        0.5,
+        1
+      ],
+      "css": "linear-gradient(to right in oklab, color(display-p3 0.1361 0.0495 0.0967) 0%, color(display-p3 0.8187 0.5312 0.4153 / 0.5) 35%, color(display-p3 0.8919 0.9500 0.9541) 100%)",
+      "cssSrgb": "linear-gradient(to right in oklab, #260b19 0%, #dd836480 35%, #e0f3f4 100%)",
+      "cssP3": "linear-gradient(to right in oklab, color(display-p3 0.1361 0.0495 0.0967) 0%, color(display-p3 0.8187 0.5312 0.4153 / 0.5) 35%, color(display-p3 0.8919 0.9500 0.9541) 100%)",
+      "gamut": {
+        "policy": "sampled",
+        "samplesChecked": 64,
+        "allSamplesInGamut": true,
+        "mappedSamples": 0,
+        "maxDeltaEOK": 0,
+        "note": "Sampled validation at 64 uniform positions between the first and last authored stop. Passing samples do not prove every point of the continuous gradient is inside the p3 gamut; each emitted stop is individually gamut mapped."
+      },
+      "contrastWorstCase": {
+        "position": 1,
+        "backgroundHex": "#e0f3f4",
+        "backgroundHexOpaque": "#e0f3f4",
+        "backgroundAlpha": 1,
+        "backdropHex": "#ffffff",
+        "ratio": 1.15,
+        "ratioExact": 1.147790219325045,
+        "grade": "Fail",
+        "normalTextAA": false,
+        "normalTextAAA": false,
+        "apcaLc": -8.1,
+        "apcaAbs": 8.1,
+        "apcaGuidance": "Fail",
+        "inTargetGamut": true
+      },
+      "contrastMeetsTarget": false
+    },
+    "invalidStopOrdering": {
+      "rejected": true,
+      "message": "Stop positions must be non-decreasing (stops[0] = 0.9, stops[1] = 0.1)."
+    }
+  },
+  "fluid": {
+    "clamp": "clamp(1.00000rem, 0.66667rem + 1.4815vw, 2.00000rem)",
+    "endpointTolerancePx": 0.01,
+    "endpointErrorPx": {
+      "atMin": 16.00012,
+      "atMax": 32
+    },
+    "customRoot": "clamp(1.60000rem, 1.06667rem + 1.4815vw, 3.20000rem)",
+    "equalViewportsRejected": true,
+    "reversedViewportsRejected": true,
+    "nonFiniteRejected": true,
+    "containsNaNOrInfinity": false,
+    "fluidScaleTool": {
+      "values": [
+        {
+          "name": "display",
+          "minPx": 38,
+          "maxPx": 72,
+          "slope": 0.03148148148148148,
+          "intercept": 26.666666666666668,
+          "clampCss": "clamp(3.16667rem, 2.22222rem + 3.1481vw, 6.00000rem)",
+          "valueAtMinViewportPx": 38.00004,
+          "valueAtMaxViewportPx": 71.99928,
+          "endpointErrorPx": {
+            "atMin": 0.00003999999999848569,
+            "atMax": 0.0007200000000011642
+          }
+        }
+      ],
+      "css": ":root {\n  --ink-fluid-display: clamp(3.16667rem, 2.22222rem + 3.1481vw, 6.00000rem);\n}",
+      "rootFontPx": 12,
+      "unit": "rem",
+      "viewport": {
+        "minViewportPx": 360,
+        "maxViewportPx": 1440
+      },
+      "endpointTolerancePx": 0.01,
+      "containsInvalidNumbers": false
+    },
+    "spacing": {
+      "invalid": {
+        "zeroRatio": true,
+        "negativeRatio": true,
+        "negativeBase": true,
+        "equalViewports": true
+      },
+      "customRatio": {
+        "3xs": {
+          "px": 4.74,
+          "rem": "0.296rem",
+          "n": -3
+        },
+        "2xs": {
+          "px": 7.11,
+          "rem": "0.444rem",
+          "n": -2
+        },
+        "xs": {
+          "px": 10.67,
+          "rem": "0.667rem",
+          "n": -1
+        },
+        "sm": {
+          "px": 16,
+          "rem": "1.000rem",
+          "n": 0
+        },
+        "md": {
+          "px": 24,
+          "rem": "1.500rem",
+          "n": 1
+        },
+        "lg": {
+          "px": 36,
+          "rem": "2.250rem",
+          "n": 2
+        },
+        "xl": {
+          "px": 54,
+          "rem": "3.375rem",
+          "n": 3
+        },
+        "2xl": {
+          "px": 81,
+          "rem": "5.063rem",
+          "n": 4
+        },
+        "3xl": {
+          "px": 121.5,
+          "rem": "7.594rem",
+          "n": 5
+        }
+      },
+      "customSteps": {
+        "tiny": {
+          "px": 5.33,
+          "rem": "0.333rem",
+          "n": -1
+        },
+        "base": {
+          "px": 8,
+          "rem": "0.500rem",
+          "n": 0
+        },
+        "big": {
+          "px": 18,
+          "rem": "1.125rem",
+          "n": 2
+        }
+      },
+      "configurableFluidFactor": {
+        "px": 16,
+        "rem": "1.000rem",
+        "n": 0,
+        "fluidMinPx": 11.2,
+        "clamp": "clamp(0.70000rem, 0.60000rem + 0.4444vw, 1.00000rem)"
+      },
+      "rootFontPx": {
+        "px": 16,
+        "rem": "1.600rem",
+        "n": 0,
+        "fluidMinPx": 13.6,
+        "clamp": "clamp(1.36000rem, 1.28000rem + 0.2222vw, 1.60000rem)"
+      }
+    }
+  },
+  "failureContracts": {
+    "captureEnvelope": {
+      "status": "failed",
+      "data": {
+        "error": "postfix-mocked backend failure"
+      },
+      "outputSchemaValid": false
+    },
+    "pythonEnvelope": {
+      "status": "failed",
+      "data": {
+        "error": "postfix-mocked backend failure"
+      },
+      "outputSchemaValid": true
+    },
+    "captureProtocol": {
+      "isError": true,
+      "message": "{\n  \"status\": \"failed\",\n  \"summary\": \"Viewport capture engine reported an error: postfix-mocked backend failure\",\n  \"data\": {\n    \"error\": \"postfix-mocked backend failure\"\n  },\n  \"warnings\": [\n    \"En"
+    },
+    "pythonProtocol": {
+      "isError": true,
+      "message": "{\n  \"status\": \"failed\",\n  \"summary\": \"Python verification engine encountered an error: postfix-mocked backend failure\",\n  \"data\": {\n    \"error\": \"postfix-mocked backend failure\"\n  },\n  \"warnings\": [\n "
+    },
+    "annotations": {
+      "pythonRunner": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "capture": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    }
+  },
+  "flags": {
+    "checkCentering": {
+      "on": {
+        "passed": false,
+        "checks": 5
+      },
+      "off": {
+        "centeringAudit": null
+      }
+    },
+    "extractOklchPalette": "covered by unit + contract + protocol tests",
+    "targetForwardedToPython": "covered by contract test"
+  },
+  "buildMismatches": [],
+  "buildFilesChecked": 40
+}
